@@ -347,6 +347,7 @@ class _AddActivitiesState extends State<AddActivities> {
                                   _selectedStartTime.format(context),
                               endActivityTime: _selectedEndTime.format(context),
                               keterangan: keteranganController.text));
+
                           Navigator.of(context).pop();
                         },
                         child: Container(

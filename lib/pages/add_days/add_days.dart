@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iterasi1/model/alert_save_dialog_result.dart';
 import 'package:iterasi1/model/day.dart';
+import 'package:iterasi1/pages/activity_photo_page.dart';
 import 'package:iterasi1/pages/add_activities/add_activities.dart';
 import 'package:iterasi1/pages/add_days/app_bar_itinerary_title.dart';
 import 'package:iterasi1/pages/add_days/search_field.dart';
@@ -464,6 +467,7 @@ class _AddDaysState extends State<AddDays> {
       key: Key(activity.hashCode.toString()),
       child: InkWell(
         onTap: () {
+          log(activity.id.toString());
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {
@@ -521,7 +525,9 @@ class _AddDaysState extends State<AddDays> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => const FotoPage(),
+                                        builder: (context) => ActivityPhotoPage(
+                                          activity: activity,
+                                        ),
                                       ),
                                     );
                                   },
