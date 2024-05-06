@@ -68,30 +68,34 @@ class _ItineraryListState extends State<ItineraryList> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 50,
                 width: 50,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  color: Colors.white,
-                  child: IconButton(
-                    icon: const Image(
-                      color: Color(0xFFC58940),
-                      image: AssetImage(
-                        'assets/images/gallery-favorite.png',
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FotoPage()),
-                      );
-                    },
-                  ),
-                ),
               ),
+              // SizedBox(
+              //   height: 50,
+              //   width: 50,
+              //   child: Card(
+              //     shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(10)),
+              //     color: Colors.white,
+              //     child: IconButton(
+              //       icon: const Image(
+              //         color: Color(0xFFC58940),
+              //         image: AssetImage(
+              //           'assets/images/gallery-favorite.png',
+              //         ),
+              //       ),
+              //       onPressed: () {
+              //         Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => const FotoPage()),
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
               Container(
                 margin: const EdgeInsets.only(
                   top: 5,
