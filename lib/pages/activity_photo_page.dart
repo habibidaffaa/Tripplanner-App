@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:path/path.dart' as path_lib;
@@ -90,6 +91,8 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
     await File(imagePicked.path).copy(newImage.path);
 
 // Sekarang Anda dapat menggunakan file yang sudah disalin
+    final result = await ImageGallerySaver.saveFile(newImage.path,
+        isReturnPathOfIOS: true);
 
     setState(
       () {
@@ -97,13 +100,13 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
           image = [newImage]; // Inisialisasi list jika belum ada
           context.read<ItineraryProvider>().addPhotoActivity(
                 activity: widget.activity,
-                pathImage: imagePicked.path,
+                pathImage: newImage.path,
               );
         } else {
           image!.add(newImage); // Tambahkan file ke dalam list
           context.read<ItineraryProvider>().addPhotoActivity(
                 activity: widget.activity,
-                pathImage: imagePicked.path,
+                pathImage: newImage.path,
               );
         }
       },
