@@ -15,7 +15,7 @@ class FotoPage extends StatefulWidget {
 }
 
 class _FotoPageState extends State<FotoPage> {
-  File? image;
+  List<File>? image;
 
   Future<void> requestPermission() async {
     final permission = Permission.storage;
@@ -32,44 +32,6 @@ class _FotoPageState extends State<FotoPage> {
     }
   }
 
-  Future getImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? imagePicked =
-        await picker.pickImage(source: ImageSource.camera);
-    if (imagePicked != null) {
-      log(imagePicked.path);
-// copy the file to a new path
-      // final File newImage = await imagePicked.('$path/image1.png');
-      setState(
-        () {
-          image = File(imagePicked.path);
-        },
-      );
-    }
-  }
-
-  // saveImage() async {
-  //   PermissionStatus result;
-  //   if (Platform.isAndroid) {
-  //     DeviceInfoPl deviceInfo = DeviceInfoPlugin();
-  //     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-  //     if (androidInfo.version.sdkInt >= 33) {
-  //       result = await Permission.photos.request();
-  //     } else {
-  //       result = await Permission.storage.request();
-  //     }
-  //     if (result.isGranted) {
-  //       var image = await boundary.toImage();
-  //       var byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-  //       var ref = FFAppState().FrameRef;
-  //       final name = 'cl1box1_' + ref;
-  //       await ImageGallerySaver.saveImage(byteData!.buffer.asUint8List(),
-  //           name: name);
-  //     }
-  //   } else {
-  //     await openAppSettings();
-  //   }
-  // }
   _saveCameraImage() async {
     final picker = ImagePicker();
     final XFile? imagePicked =
@@ -81,10 +43,15 @@ class _FotoPageState extends State<FotoPage> {
     );
     setState(
       () {
-        image = File(imagePicked.path);
+        if (image == null) {
+          image = [File(imagePicked.path)]; // Inisialisasi list jika belum ada
+        } else {
+          image!.add(File(imagePicked.path)); // Tambahkan file ke dalam list
+        }
       },
     );
     print(result); // Cetak hasil (path gambar yang disimpan)
+    print(image.toString());
   }
 
   Future getImageGallery() async {
@@ -94,7 +61,14 @@ class _FotoPageState extends State<FotoPage> {
     if (imagePicked != null) {
       setState(
         () {
-          image = File(imagePicked.path);
+          // image = File(imagePicked.path);
+          if (image == null) {
+            image = [
+              File(imagePicked.path)
+            ]; // Inisialisasi list jika belum ada
+          } else {
+            image!.add(File(imagePicked.path)); // Tambahkan file ke dalam list
+          }
         },
       );
     }
@@ -179,10 +153,24 @@ class _FotoPageState extends State<FotoPage> {
                   height: 6,
                 ),
                 image != null
-                    ? SizedBox(
-                        height: 500,
-                        width: MediaQuery.of(context).size.width,
-                        child: Image.file(image!, fit: BoxFit.cover),
+                    ? GridView.builder(
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount:
+                              3, // Menentukan jumlah gambar per baris
+                          crossAxisSpacing:
+                              4.0, // Spasi antar gambar secara horizontal
+                          mainAxisSpacing:
+                              4.0, // Spasi antar gambar secara vertikal
+                        ),
+                        itemCount: image!.length,
+                        itemBuilder: (context, index) {
+                          return Image.file(
+                            image![index],
+                            fit: BoxFit.cover,
+                          );
+                        },
                       )
                     : Container(),
               ],
