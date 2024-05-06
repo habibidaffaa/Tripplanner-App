@@ -73,11 +73,14 @@ class DatabaseService {
     try {
       final db = await database;
       print('fetch itineraries dipanggil;');
-      final hasilQuery = (await db.query(_itinerariesTableName)).map((rawData) {
-        final jsonString = rawData['data']!.toString();
-        developer.log(jsonString);
-        return Itinerary.fromJson(jsonDecode(jsonString));
-      }).cast<Itinerary>().toList();
+      final hasilQuery = (await db.query(_itinerariesTableName))
+          .map((rawData) {
+            final jsonString = rawData['data']!.toString();
+            developer.log(jsonString);
+            return Itinerary.fromJson(jsonDecode(jsonString));
+          })
+          .cast<Itinerary>()
+          .toList();
       print('map selesai ${hasilQuery.length} ${hasilQuery.runtimeType}');
       // print('${hasilQuery[1].id} ${hasilQuery[1].firstDate}');
       final hasilFilter = hasilQuery.where((itinerary) {
@@ -85,7 +88,7 @@ class DatabaseService {
         return itinerary.title
             .contains(RegExp(filterItineraryName, caseSensitive: false));
       }).toList();
-      print('sukses query');
+      print(' query');
       return hasilFilter;
     } catch (e) {
       rethrow;
