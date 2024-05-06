@@ -1,0 +1,142 @@
+import 'package:flutter/material.dart';
+import 'package:iterasi1/provider/database_provider.dart';
+import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:iterasi1/pages/add_days/add_days.dart';
+
+import '../../provider/itinerary_provider.dart';
+
+class SelectDate extends StatefulWidget {
+  List<DateTime> initialDates;
+  SelectDate({Key? key, this.initialDates = const []}) : super(key: key);
+
+  @override
+  State<SelectDate> createState() => _SelectDateState();
+}
+
+class _SelectDateState extends State<SelectDate> {
+  late ItineraryProvider itineraryProvider;
+  late DatabaseProvider databaseProvider;
+  List<DateTime> selectedDates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDates = widget.initialDates;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    itineraryProvider = Provider.of(context, listen: true);
+    databaseProvider = Provider.of(context, listen: true);
+
+    return LoaderOverlay(
+      child: Scaffold(
+        backgroundColor: const Color(0xFFE5BA73),
+        appBar: AppBar(
+          title: const Text(
+            'Pilih Tanggal',
+            style: TextStyle(
+              fontSize: 30,
+              fontFamily: 'poppins_bold',
+            ),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: const Color(0xFFE5BA73),
+          elevation: 0,
+        ),
+        body: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          child: Container(
+            color: CustomColor.surface,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Expanded(
+              child: SfDateRangePicker(
+                selectionColor: CustomColor.dateBackground,
+                initialSelectedDates: widget.initialDates,
+                selectionMode: DateRangePickerSelectionMode.multiple,
+                onSelectionChanged:
+                    (DateRangePickerSelectionChangedArgs? args) {
+                  if (args?.value is List<DateTime>) {
+                    final dates = args?.value as List<DateTime>;
+                    final today = DateTime.now();
+                    final filteredDates =
+                        dates.where((date) => date.isAfter(today)).toList();
+                    setState(() {
+                      selectedDates = filteredDates;
+                    });
+                  }
+                },
+                headerStyle: const DateRangePickerHeaderStyle(
+                  textAlign: TextAlign.center,
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontFamily: 'poppins_bold',
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(48),
+          child: SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              style: const ButtonStyle(
+                backgroundColor:
+                    MaterialStatePropertyAll(CustomColor.buttonColor),
+                padding: MaterialStatePropertyAll(
+                    EdgeInsets.symmetric(vertical: 20)),
+                shape: MaterialStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                ),
+              ),
+              child: const Text(
+                'Pilih',
+                style: TextStyle(
+                    fontFamily: 'poppins_bold',
+                    fontSize: 16,
+                    color: Colors.white),
+              ),
+              onPressed: () {
+                if (selectedDates.isNotEmpty) {
+                  itineraryProvider.initializeDays(selectedDates);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return AddDays();
+                      },
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Pilih Tanggal sesuai Hari Ini!"),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

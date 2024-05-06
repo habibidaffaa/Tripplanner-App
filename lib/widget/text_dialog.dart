@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iterasi1/resource/custom_colors.dart';
 
-Future<T?> showTextDialog<T> (
+Future<T?> showTextDialog<T>(
   BuildContext context, {
-    required String title,
-    required String value,
+  required String title,
+  required String value,
 }) =>
     showDialog<T>(
       context: context,
@@ -17,7 +17,8 @@ Future<T?> showTextDialog<T> (
 class TextDialogWidget extends StatefulWidget {
   final String title;
   final String value;
-  const TextDialogWidget({Key? key, required this.title, required this.value}) : super(key: key);
+  const TextDialogWidget({Key? key, required this.title, required this.value})
+      : super(key: key);
 
   @override
   State<TextDialogWidget> createState() => _TextDialogWidgetState();
@@ -34,49 +35,47 @@ class _TextDialogWidgetState extends State<TextDialogWidget> {
   }
 
   Widget build(BuildContext context) => AlertDialog(
-    title: Text(widget.title),
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            errorText: errorText,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: CustomColor.primary , width: 2),
-              borderRadius: BorderRadius.circular(20)
+        title: Text(widget.title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                  errorText: errorText,
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: CustomColor.primary, width: 2),
+                      borderRadius: BorderRadius.circular(20)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20))),
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20)
-            )
-          ),
-        ),
-
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.only(top : 18),
-            child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(CustomColor.buttonColor),
-                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)
-                  ))
-                ),
-                child: Text('Done'),
-                onPressed: (){
-                  if (controller.text.isNotEmpty)
-                    Navigator.of(context).pop(controller.text);
-                  else
-                    setState(() {
-                      errorText = "Judul tidak boleh kosong!";
-                    });
-                }
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 18),
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(CustomColor.buttonColor),
+                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)))),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(color: CustomColor.surface),
+                    ),
+                    onPressed: () {
+                      if (controller.text.isNotEmpty)
+                        Navigator.of(context).pop(controller.text);
+                      else
+                        setState(() {
+                          errorText = "Judul tidak boleh kosong!";
+                        });
+                    }),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 }

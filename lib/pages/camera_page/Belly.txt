@@ -1,0 +1,144 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart'; // Import path_provider package
+import 'package:path/path.dart'; // Import path package
+import 'package:iterasi1/resource/custom_colors.dart';
+
+class FotoPage extends StatefulWidget {
+  const FotoPage({Key? key}) : super(key: key);
+
+  @override
+  _FotoPageState createState() => _FotoPageState();
+}
+
+class _FotoPageState extends State<FotoPage> {
+  File? image;
+
+  Future getImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? imagePicked =
+        await picker.pickImage(source: ImageSource.camera);
+    if (imagePicked != null) {
+      setState(
+        () {
+          image = File(imagePicked.path);
+          saveImageToLocal(
+              image!); // Call function to save image to local storage
+        },
+      );
+    }
+  }
+
+  Future getImageGallery() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? imagePicked =
+        await picker.pickImage(source: ImageSource.gallery);
+    if (imagePicked != null) {
+      setState(
+        () {
+          image = File(imagePicked.path);
+          saveImageToLocal(
+              image!); // Call function to save image to local storage
+        },
+      );
+    }
+  }
+
+  Future<void> saveImageToLocal(File imageFile) async {
+    try {
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = basename(imageFile.path);
+      final savedImage = File('${appDir.path}/$fileName');
+      await imageFile.copy(savedImage.path);
+      print('Image saved to local: ${savedImage.path}');
+    } catch (error) {
+      print('Error saving image: $error');
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Image",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'poppins_bold',
+            fontSize: 24,
+            fontWeight: FontWeight.normal,
+            color: Color(0xFFC58940),
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              await getImage();
+            },
+            style: ElevatedButton.styleFrom(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Image.asset(
+                  'assets/images/Logo_camera.png',
+                  width: 40,
+                  height: 40,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        await getImageGallery();
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color?>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed)) {
+                              return Colors.grey[100];
+                            }
+                            return Colors.grey;
+                          },
+                        ),
+                      ),
+                      child: const Text(
+                        'Gallery',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 6,
+                ),
+                image != null
+                    ? SizedBox(
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: Image.file(image!, fit: BoxFit.cover),
+                      )
+                    : Container(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

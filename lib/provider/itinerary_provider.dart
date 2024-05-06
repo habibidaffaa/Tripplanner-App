@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/model/day.dart';
@@ -44,9 +45,9 @@ class ItineraryProvider extends ChangeNotifier{
     var j = 0;
     // Push semua currentDates yang gak ada di sortedNewDates
     while (i < sortedNewDates.length && j < currentDates.length){
-      if (currentDates[j].isBefore(sortedNewDates[i]))
+      if (currentDates[j].isBefore(sortedNewDates[i])) {
         j++;
-      else if (currentDates[j].isAfter(sortedNewDates[i]))
+      } else if (currentDates[j].isAfter(sortedNewDates[i]))
         finalDays.add(Day.from(sortedNewDates[i++]));
       else {
         finalDays.add(_itinerary.days[j].copy());
@@ -54,8 +55,9 @@ class ItineraryProvider extends ChangeNotifier{
         i++;
       }
     }
-    while (i < sortedNewDates.length)
+    while (i < sortedNewDates.length) {
       finalDays.add(Day.from(sortedNewDates[i++]));
+    }
 
     _itinerary.days = finalDays;
 
@@ -67,13 +69,25 @@ class ItineraryProvider extends ChangeNotifier{
 
 
   void updateActivity({
-    required Activity oldActivity,
-    required Activity newActivity
+    required int updatedDayIndex,
+    required int updatedActivityIndex,
+    required Activity newActivity,
   }){
-    oldActivity.startActivityTime = newActivity.startActivityTime;
-    oldActivity.activityName = newActivity.activityName;
-    oldActivity.endActivityTime = newActivity.endActivityTime;
-    oldActivity.keterangan = newActivity.keterangan;
+    _itinerary = itinerary.copy(
+      days: itinerary.days.mapIndexed((index, day){
+        if (index == updatedDayIndex){
+          return day.copy(
+            activities: day.activities.mapIndexed((index, activity){
+              if (index == updatedActivityIndex) {
+                return newActivity;
+              }
+              return activity;
+            }).toList()
+          );
+        }
+        return day;
+      }).toList()
+    );
     notifyListeners();
   }
 

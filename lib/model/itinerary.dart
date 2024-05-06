@@ -16,8 +16,8 @@ class Itinerary{
     required this.dateModified,
     List<Day>? days
   }) :
-      this.id = id ?? const Uuid().v1(),
-      this.days = days ?? [];
+      id = id ?? const Uuid().v1(),
+      days = days ?? [];
 
   Map<String , dynamic> toJson(){
     return {

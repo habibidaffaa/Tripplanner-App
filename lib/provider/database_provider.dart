@@ -2,28 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:iterasi1/database/database_service.dart';
 import '../model/itinerary.dart';
 
-class DatabaseProvider extends ChangeNotifier{
-
+class DatabaseProvider extends ChangeNotifier {
   final _dbService = DatabaseService();
 
   late Future<List<Itinerary>> _itineraryDatas;
-  Future<List<Itinerary>> get itineraryDatas{
+  Future<List<Itinerary>> get itineraryDatas {
     return _itineraryDatas;
   }
-  DatabaseProvider(){
+
+  DatabaseProvider() {
     refreshData();
   }
 
-  void refreshData({
-    String filterItineraryName = ""
-  }){
-    _itineraryDatas = _dbService.fetchItineraries(
-      filterItineraryName: filterItineraryName
-    );
+  void refreshData({String filterItineraryName = ""}) {
+    print('refresh data dipanggil');
+    _itineraryDatas =
+        _dbService.fetchItineraries(filterItineraryName: filterItineraryName);
     notifyListeners();
   }
 
-  Future<void> deleteItinerary({required Itinerary itinerary}) async{
+  Future<void> deleteItinerary({required Itinerary itinerary}) async {
     await _dbService.deleteItinerary(itinerary.id);
     refreshData();
   }

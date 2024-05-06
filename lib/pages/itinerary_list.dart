@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
-import 'package:iterasi1/pages/FotoPage.dart';
+import 'package:iterasi1/pages/foto_page.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/pages/datepicker/select_date.dart';
@@ -47,15 +48,19 @@ class _ItineraryListState extends State<ItineraryList> {
         resizeToAvoidBottomInset: true,
         key: _scaffoldKey,
         floatingActionButton: FloatingActionButton(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            backgroundColor: const Color(0xFFC58940),
-            onPressed: () {
-              getItineraryTitle(context);
-            },
-            child: const Icon(Icons.add)),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          backgroundColor: const Color(0xFFC58940),
+          onPressed: () {
+            getItineraryTitle(context);
+          },
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: const Color(0xFFFAF8F1),
-        drawer: NavDrawer(),
+        // drawer: NavDrawer(),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: const Color(0xFFFAF8F1),
@@ -84,12 +89,22 @@ class _ItineraryListState extends State<ItineraryList> {
                             builder: (context) => const FotoPage()),
                       );
                     },
-
-                    // highlightColor: Colors.transparent,
-                    // splashColor: Colors.transparent,
-                    // tooltip:
-                    //     MaterialLocalizations.of(context).openAppDrawerTooltip,
                   ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                  top: 5,
+                  bottom: 10,
+                ),
+                child: const Text(
+                  "Trip Planner",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: 'poppins_bold',
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFC58940)),
                 ),
               ),
               SizedBox(
@@ -104,9 +119,6 @@ class _ItineraryListState extends State<ItineraryList> {
                       Icons.search,
                       color: CustomColor.buttonColor,
                     ),
-                    // icon: const Image(
-                    //   image: AssetImage('assets/logo/AppLogo.png'),
-                    // ),
                     onPressed: () {
                       showModalBottomSheet(
                           shape: const RoundedRectangleBorder(
@@ -185,7 +197,7 @@ class _ItineraryListState extends State<ItineraryList> {
                                                     },
                                                     icon: const Image(
                                                       image: AssetImage(
-                                                          'assets/logo/Search_Button.png'),
+                                                          'assets/images/Search_Button.png'),
                                                     )),
                                               ),
                                             ),
@@ -218,51 +230,49 @@ class _ItineraryListState extends State<ItineraryList> {
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   children: [
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 5,
-                        bottom: 10,
-                      ),
-                      child: const Text(
-                        "Trip Planner",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'poppins_bold',
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFC58940)),
-                      ),
-                    ),
                     FutureBuilder<List<Itinerary>>(
-                        future: dbProvider.itineraryDatas,
-                        builder: (context, snapshot) {
-                          final itineraries = snapshot.data;
-                          if (itineraries != null) {
-                            // developer.log("Itineraries : ${itineraries.length}" , name: "qqq");
-                            return GridView.builder(
-                              scrollDirection: Axis.vertical,
-                              physics: const BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                              ),
-                              itemCount: itineraries.length,
-                              itemBuilder: (context, index) {
-                                final item = itineraries[index];
-                                //
-                                return KartuItinerary(
-                                    item, dbProvider, context);
-                              },
-                            );
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        })
+                      future: dbProvider.itineraryDatas,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          // Jika masih dalam proses memuat data, tampilkan indikator kemajuan
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          // Jika terjadi kesalahan, tampilkan pesan kesalahan
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else if (snapshot.hasData) {
+                          // Jika data sudah tersedia, tampilkan daftar itineraries
+                          final itineraries = snapshot.data!;
+                          return Column(
+                            children: [
+                              ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                physics: const BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: itineraries.length,
+                                itemBuilder: (context, index) {
+                                  final item = itineraries[index];
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 16.0),
+                                    height: 100,
+                                    child: KartuItinerary(item, dbProvider,
+                                        context), // Anda dapat menaruh KartuItinerary di sini
+                                  );
+                                },
+                              )
+                            ],
+                          );
+                        } else {
+                          // Jika tidak ada data, tampilkan widget kosong
+                          return Container(); // atau bisa juga return null
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -283,17 +293,22 @@ class _ItineraryListState extends State<ItineraryList> {
 
         snackbarHandler.removeCurrentSnackBar();
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return AddDays();
+          return const AddDays();
         }));
       },
       child: Card(
         elevation: 5,
+        color: const Color(0xFFC58940),
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
         ),
         child: Container(
-          padding: const EdgeInsets.only(bottom: 12),
-          height: 180,
+          padding: const EdgeInsets.only(
+            bottom: 12,
+          ),
+          height: 0,
           child: Stack(
             children: [
               Padding(
@@ -303,22 +318,26 @@ class _ItineraryListState extends State<ItineraryList> {
                   child: InkWell(
                     onTap: () {
                       snackbarHandler.removeCurrentSnackBar();
-
                       final itineraryCopy = itinerary.copy();
                       dbProvider
                           .deleteItinerary(itinerary: itinerary)
-                          .whenComplete(() {
-                        snackbarHandler.showSnackBar(SnackBar(
-                          content: const Text("Item dihapus!"),
-                          action: SnackBarAction(
-                              label: "Undo",
-                              onPressed: () {
-                                dbProvider.insertItinerary(
-                                    itinerary: itineraryCopy);
-                                snackbarHandler.removeCurrentSnackBar();
-                              }),
-                        ));
-                      });
+                          .whenComplete(
+                        () {
+                          snackbarHandler.showSnackBar(
+                            SnackBar(
+                              content: const Text("Item dihapus!"),
+                              action: SnackBarAction(
+                                label: "Undo",
+                                onPressed: () {
+                                  dbProvider.insertItinerary(
+                                      itinerary: itineraryCopy);
+                                  snackbarHandler.removeCurrentSnackBar();
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
                     child: const Icon(
                       Icons.close,
@@ -336,7 +355,7 @@ class _ItineraryListState extends State<ItineraryList> {
                         fontFamily: 'Monsterrat',
                         fontWeight: FontWeight.w600,
                         fontSize: 20,
-                        color: CustomColor.buttonColor),
+                        color: Colors.white),
                     textAlign: TextAlign.center,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -372,9 +391,13 @@ class _ItineraryListState extends State<ItineraryList> {
 
         snackbarHandler.removeCurrentSnackBar();
 
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return SelectDate();
-        }));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return SelectDate();
+            },
+          ),
+        );
       }
     }
   }

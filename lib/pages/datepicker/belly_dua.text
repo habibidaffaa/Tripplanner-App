@@ -77,22 +77,17 @@ class _SelectDateState extends State<SelectDate> {
                           selectionColor: CustomColor.dateBackground,
                           initialSelectedDates: widget.initialDates,
                           selectionMode: DateRangePickerSelectionMode.multiple,
-                          minDate: DateTime.now(),
                           onSelectionChanged:
                               (DateRangePickerSelectionChangedArgs? args) {
                             if (args?.value is List<DateTime>) {
                               final dates = args?.value as List<DateTime>;
+                              final today = DateTime.now();
+                              final filteredDates = dates
+                                  .where((date) => date.isAfter(today))
+                                  .toList();
                               setState(
                                 () {
-                                  selectedDates = dates
-                                      .where(
-                                        (date) => date.isAfter(
-                                          DateTime.now().subtract(
-                                            const Duration(days: 1),
-                                          ),
-                                        ),
-                                      )
-                                      .toList();
+                                  selectedDates = filteredDates;
                                 },
                               );
                             }
@@ -197,7 +192,7 @@ class _SelectDateState extends State<SelectDate> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content:
-                                const Text("Pilih Tanggal setelah Hari Ini!"),
+                                const Text("Pilih Tanggal sesuai Hari Ini!"),
                           ),
                         );
                       }

@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:iterasi1/main.dart';
+// import 'package:iterasi1/main.dart';
 import 'package:iterasi1/pages/itinerary_list.dart';
 
 void main() {

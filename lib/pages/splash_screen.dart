@@ -34,13 +34,13 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.8, // responsive
               child: Image.asset(
-                'assets/logo/AppLogo.png',
+                'assets/images/AppLogo.png',
                 fit: BoxFit.contain,
                 width: 170,
                 height: 170,
               ),
             ),
-            Text(
+            const Text(
               'Trip Planner',
               style: TextStyle(
                 fontSize: 40, // responsive
@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
               animatedTexts: [
                 TypewriterAnimatedText(
                   'Your Personal Itinerary Assistant',
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     fontSize: 18,
                     fontFamily: 'Quicksand',
                     fontWeight: FontWeight.w600,
