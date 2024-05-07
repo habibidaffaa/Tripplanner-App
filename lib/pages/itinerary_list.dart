@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
-import 'package:iterasi1/pages/foto_page.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/pages/datepicker/select_date.dart';
@@ -105,10 +104,11 @@ class _ItineraryListState extends State<ItineraryList> {
                   "Trip Planner",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontFamily: 'poppins_bold',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFC58940)),
+                    fontFamily: 'poppins_bold',
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFC58940),
+                  ),
                 ),
               ),
               SizedBox(
