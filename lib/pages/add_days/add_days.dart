@@ -9,7 +9,6 @@ import 'package:iterasi1/pages/add_activities/add_activities.dart';
 import 'package:iterasi1/pages/add_days/app_bar_itinerary_title.dart';
 import 'package:iterasi1/pages/add_days/search_field.dart';
 import 'package:iterasi1/pages/datepicker/select_date.dart';
-import 'package:iterasi1/pages/foto_page.dart';
 import 'package:iterasi1/pages/itinerary_list.dart';
 import 'package:iterasi1/pages/pdf/preview_pdf_page.dart';
 import 'package:iterasi1/provider/database_provider.dart';
@@ -620,45 +619,96 @@ class _AddDaysState extends State<AddDays> {
 
   Future<AlertSaveDialogResult?> showAlertSaveDialog(BuildContext context) {
     return showDialog<AlertSaveDialogResult?>(
-        // Nilai yang direturn adalah Future<HasilPop>
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: const Text("Yakin ingin kembali?"),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(AlertSaveDialogResult.cancel);
-                  },
-                  child: const Text("Batal")),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pop(AlertSaveDialogResult.saveAndQuit);
-                  },
-                  child: const Text("Keluar dan Simpan")),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pop(AlertSaveDialogResult.saveWithoutQuit);
-                  },
-                  child: const Text(
-                    "Keluar Tanpa Simpan",
-                    style: TextStyle(color: Colors.red),
-                  ))
-            ],
-          );
-        });
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white, // Ubah warna latar belakang
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0), // Ubah bentuk border
+          ),
+          title: const Text(
+            "Konfirmasi",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'poppins_bold',
+              color: Color(0xFFC58940), // Ubah warna teks judul
+              fontWeight: FontWeight.bold, // Teks judul menjadi tebal
+            ),
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pop(AlertSaveDialogResult.saveWithoutQuit);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red, // Ubah warna latar belakang
+                        borderRadius:
+                            BorderRadius.circular(8), // Ubah bentuk border
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12), // Atur padding
+                      child: const Text(
+                        "Keluar Tanpa Simpan",
+                        textAlign:
+                            TextAlign.center, // Pusatkan teks dalam tombol
+                        style: TextStyle(
+                          fontFamily: 'poppins_bold',
+                          color: Colors.white, // Ubah warna teks
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pop(AlertSaveDialogResult.saveAndQuit);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green, // Ubah warna latar belakang
+                        borderRadius:
+                            BorderRadius.circular(8), // Ubah bentuk border
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12), // Atur padding
+                      child: const Text(
+                        "Keluar dan Simpan",
+                        textAlign:
+                            TextAlign.center, // Pusatkan teks dalam tombol
+                        style: TextStyle(
+                          fontFamily: 'poppins_bold',
+                          color: Colors.white, // Ubah warna teks
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> saveCurrentItinerary() {
     context.loaderOverlay.show();
     return databaseProvider
         .insertItinerary(itinerary: itineraryProvider.itinerary)
-        .whenComplete(() {
-      Navigator.popUntil(context, ModalRoute.withName(ItineraryList.route));
-      context.loaderOverlay.hide();
-    });
+        .whenComplete(
+      () {
+        Navigator.popUntil(context, ModalRoute.withName(ItineraryList.route));
+        context.loaderOverlay.hide();
+      },
+    );
   }
 
   Future<bool> handleBackBehaviour() async {
