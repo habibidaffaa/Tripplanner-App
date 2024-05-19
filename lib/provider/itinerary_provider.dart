@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:iterasi1/model/activity.dart';
@@ -5,46 +7,45 @@ import 'package:iterasi1/model/day.dart';
 import 'package:iterasi1/model/itinerary.dart';
 import 'dart:developer' as developer;
 
-
-
-class ItineraryProvider extends ChangeNotifier{
+class ItineraryProvider extends ChangeNotifier {
   late Itinerary _itinerary;
   late Itinerary initialItinerary;
   Itinerary get itinerary => _itinerary;
 
-  bool get isDataChanged => _itinerary.toJsonString() != initialItinerary.toJsonString();
+  bool get isDataChanged =>
+      _itinerary.toJsonString() != initialItinerary.toJsonString();
 
-  void initItinerary(Itinerary newItinerary){
+  void initItinerary(Itinerary newItinerary) {
     _itinerary = newItinerary.copy();
     initialItinerary = newItinerary.copy();
     notifyListeners();
   }
 
-  void setNewItineraryTitle(String newTitle){
+  void setNewItineraryTitle(String newTitle) {
     _itinerary.title = newTitle;
   }
 
-  void addDay(Day newDay){
+  void addDay(Day newDay) {
     try {
-      _itinerary.days = [..._itinerary.days , newDay];
+      _itinerary.days = [..._itinerary.days, newDay];
     } catch (e) {
-      developer.log("$e" , name : 'qqq');
+      developer.log("$e", name: 'qqq');
     }
     notifyListeners();
   }
 
-  void initializeDays(List<DateTime> dates){
-    List<DateTime> sortedNewDates = dates
-        ..sort();
+  void initializeDays(List<DateTime> dates) {
+    List<DateTime> sortedNewDates = dates..sort();
 
-    List<DateTime> currentDates = _itinerary.days.map((e) => e.getDatetime()).toList();
+    List<DateTime> currentDates =
+        _itinerary.days.map((e) => e.getDatetime()).toList();
 
     List<Day> finalDays = [];
 
     var i = 0;
     var j = 0;
     // Push semua currentDates yang gak ada di sortedNewDates
-    while (i < sortedNewDates.length && j < currentDates.length){
+    while (i < sortedNewDates.length && j < currentDates.length) {
       if (currentDates[j].isBefore(sortedNewDates[i])) {
         j++;
       } else if (currentDates[j].isAfter(sortedNewDates[i]))
@@ -65,55 +66,52 @@ class ItineraryProvider extends ChangeNotifier{
   }
 
   String convertDateTimeToString({required DateTime dateTime}) =>
-    "${dateTime.day}/" "${dateTime.month}/" "${dateTime.year}";
-
+      "${dateTime.day}/" "${dateTime.month}/" "${dateTime.year}";
 
   void updateActivity({
     required int updatedDayIndex,
     required int updatedActivityIndex,
     required Activity newActivity,
-  }){
+  }) {
     _itinerary = itinerary.copy(
-      days: itinerary.days.mapIndexed((index, day){
-        if (index == updatedDayIndex){
-          return day.copy(
-            activities: day.activities.mapIndexed((index, activity){
-              if (index == updatedActivityIndex) {
-                return newActivity;
-              }
-              return activity;
-            }).toList()
-          );
-        }
-        return day;
-      }).toList()
-    );
+        days: itinerary.days.mapIndexed((index, day) {
+      if (index == updatedDayIndex) {
+        return day.copy(
+            activities: day.activities.mapIndexed((index, activity) {
+          if (index == updatedActivityIndex) {
+            return newActivity;
+          }
+          return activity;
+        }).toList());
+      }
+      return day;
+    }).toList());
     notifyListeners();
   }
 
-  void insertNewActivity({
-    required List<Activity> activities,
-    required Activity newActivity
-  }){
+  void insertNewActivity(
+      {required List<Activity> activities, required Activity newActivity}) {
     activities.add(newActivity);
     notifyListeners();
   }
 
-  void removeActivity({
-    required List<Activity> activities,
-    required int removedHashCode
-  }){
-    activities.removeWhere(
-      (element) => element.hashCode == removedHashCode
-    );
+  void removeActivity(
+      {required List<Activity> activities, required int removedHashCode}) {
+    activities.removeWhere((element) => element.hashCode == removedHashCode);
     notifyListeners();
   }
 
-  Future<List<Activity>> getSortedActivity(List<Activity> activities) async{
-    return activities..sort(
-        (a , b){
-          return a.startDateTime.compareTo(b.startDateTime);
-        }
-    );
+  void addPhotoActivity(
+      {required Activity activity, required String pathImage}) {
+    activity.images!.add(pathImage);
+    log("ADD IMAGE $pathImage");
+    notifyListeners();
+  }
+
+  Future<List<Activity>> getSortedActivity(List<Activity> activities) async {
+    return activities
+      ..sort((a, b) {
+        return a.startDateTime.compareTo(b.startDateTime);
+      });
   }
 }

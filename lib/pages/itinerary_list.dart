@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
-import 'package:iterasi1/pages/foto_page.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/pages/datepicker/select_date.dart';
@@ -68,30 +67,34 @@ class _ItineraryListState extends State<ItineraryList> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 50,
                 width: 50,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  color: Colors.white,
-                  child: IconButton(
-                    icon: const Image(
-                      color: Color(0xFFC58940),
-                      image: AssetImage(
-                        'assets/images/gallery-favorite.png',
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FotoPage()),
-                      );
-                    },
-                  ),
-                ),
               ),
+              // SizedBox(
+              //   height: 50,
+              //   width: 50,
+              //   child: Card(
+              //     shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(10)),
+              //     color: Colors.white,
+              //     child: IconButton(
+              //       icon: const Image(
+              //         color: Color(0xFFC58940),
+              //         image: AssetImage(
+              //           'assets/images/gallery-favorite.png',
+              //         ),
+              //       ),
+              //       onPressed: () {
+              //         Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => const FotoPage()),
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
               Container(
                 margin: const EdgeInsets.only(
                   top: 5,
@@ -101,10 +104,11 @@ class _ItineraryListState extends State<ItineraryList> {
                   "Trip Planner",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontFamily: 'poppins_bold',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFC58940)),
+                    fontFamily: 'poppins_bold',
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFC58940),
+                  ),
                 ),
               ),
               SizedBox(
