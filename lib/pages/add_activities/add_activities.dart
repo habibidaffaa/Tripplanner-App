@@ -16,6 +16,7 @@ class AddActivities extends StatefulWidget {
 class _AddActivitiesState extends State<AddActivities> {
   TimeOfDay _selectedStartTime = TimeOfDay.now();
   TimeOfDay _selectedEndTime = TimeOfDay.now();
+  bool _isEndTimeValid = true;
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController lokasiController = TextEditingController();
@@ -39,11 +40,10 @@ class _AddActivitiesState extends State<AddActivities> {
       initialTime: _selectedStartTime,
     );
     if (picked != null && picked != _selectedStartTime) {
-      setState(
-        () {
-          _selectedStartTime = picked;
-        },
-      );
+      setState(() {
+        _selectedStartTime = picked;
+        _validateEndTime();
+      });
     }
   }
 
@@ -53,11 +53,20 @@ class _AddActivitiesState extends State<AddActivities> {
       initialTime: _selectedEndTime,
     );
     if (picked != null && picked != _selectedEndTime) {
-      setState(
-        () {
-          _selectedEndTime = picked;
-        },
-      );
+      setState(() {
+        _selectedEndTime = picked;
+        _validateEndTime();
+      });
+    }
+  }
+
+  void _validateEndTime() {
+    if (_selectedEndTime.hour < _selectedStartTime.hour ||
+        (_selectedEndTime.hour == _selectedStartTime.hour &&
+            _selectedEndTime.minute <= _selectedStartTime.minute)) {
+      _isEndTimeValid = false;
+    } else {
+      _isEndTimeValid = true;
     }
   }
 
@@ -293,6 +302,17 @@ class _AddActivitiesState extends State<AddActivities> {
                           ),
                         ],
                       ),
+                      if (!_isEndTimeValid)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            'Waktu Selesai tidak boleh mendahului Waktu Mulai!',
+                            style: TextStyle(
+                              fontFamily: 'Popins',
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 30),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
