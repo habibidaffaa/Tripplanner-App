@@ -65,8 +65,8 @@ class ItineraryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String convertDateTimeToString({required DateTime dateTime}) =>
-      "${dateTime.day}/" "${dateTime.month}/" "${dateTime.year}";
+  // String convertDateTimeToString({required DateTime dateTime}) =>
+  //     "${dateTime.day}/" "${dateTime.month}/" "${dateTime.year}";
 
   void updateActivity({
     required int updatedDayIndex,
