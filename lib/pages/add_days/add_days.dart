@@ -604,13 +604,17 @@ class _AddDaysState extends State<AddDays> {
                             const SizedBox(
                               width: 9,
                             ),
-                            Text(
-                              activity.lokasi,
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(
-                                fontFamily: 'poppins_bold',
-                                fontSize: 15,
-                                color: Colors.white,
+                            Expanded(
+                              child: Text(
+                                activity.lokasi,
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                  fontFamily: 'poppins_bold',
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],

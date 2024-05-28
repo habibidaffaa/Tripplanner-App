@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:iterasi1/resource/custom_colors.dart';
-
 import '../../model/activity.dart';
 
 class AddActivities extends StatefulWidget {
   final Activity? initialActivity;
   final Function(Activity) onSubmit;
 
-  AddActivities({this.initialActivity, required this.onSubmit, super.key});
+  const AddActivities(
+      {this.initialActivity, required this.onSubmit, super.key});
 
   @override
   _AddActivitiesState createState() => _AddActivitiesState();
@@ -40,10 +40,12 @@ class _AddActivitiesState extends State<AddActivities> {
       initialTime: _selectedStartTime,
     );
     if (picked != null && picked != _selectedStartTime) {
-      setState(() {
-        _selectedStartTime = picked;
-        _validateEndTime();
-      });
+      setState(
+        () {
+          _selectedStartTime = picked;
+          _validateEndTime();
+        },
+      );
     }
   }
 
@@ -53,21 +55,36 @@ class _AddActivitiesState extends State<AddActivities> {
       initialTime: _selectedEndTime,
     );
     if (picked != null && picked != _selectedEndTime) {
-      setState(() {
-        _selectedEndTime = picked;
-        _validateEndTime();
-      });
+      setState(
+        () {
+          _selectedEndTime = picked;
+          _validateEndTime();
+        },
+      );
     }
   }
 
   void _validateEndTime() {
-    if (_selectedEndTime.hour < _selectedStartTime.hour ||
-        (_selectedEndTime.hour == _selectedStartTime.hour &&
-            _selectedEndTime.minute <= _selectedStartTime.minute)) {
-      _isEndTimeValid = false;
-    } else {
-      _isEndTimeValid = true;
-    }
+    setState(
+      () {
+        _isEndTimeValid = _selectedEndTime.hour > _selectedStartTime.hour ||
+            (_selectedEndTime.hour == _selectedStartTime.hour &&
+                _selectedEndTime.minute > _selectedStartTime.minute);
+      },
+    );
+  }
+
+  void _submitActivity() {
+    final newActivity = Activity(
+      activityName: titleController.text,
+      lokasi: lokasiController.text,
+      startActivityTime: _selectedStartTime.format(context),
+      endActivityTime: _selectedEndTime.format(context),
+      keterangan: keteranganController.text,
+    );
+
+    widget.onSubmit(newActivity);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -86,10 +103,7 @@ class _AddActivitiesState extends State<AddActivities> {
                 scrollDirection: Axis.vertical,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                      top: 5,
-                      bottom: 10,
-                    ),
+                    padding: const EdgeInsets.only(top: 5, bottom: 10),
                     child: Row(
                       children: [
                         IconButton(
@@ -124,6 +138,7 @@ class _AddActivitiesState extends State<AddActivities> {
                           fontSize: 20,
                           color: Colors.black,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 10),
                       TextField(
@@ -154,6 +169,7 @@ class _AddActivitiesState extends State<AddActivities> {
                           fontSize: 20,
                           color: Colors.black,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 10),
                       TextField(
@@ -169,7 +185,6 @@ class _AddActivitiesState extends State<AddActivities> {
                               width: 2,
                             ),
                           ),
-                          // Menambahkan ikon sebagai suffixIcon
                           suffixIcon: const Icon(
                             IconData(0xe055, fontFamily: 'MaterialIcons'),
                             size: 30,
@@ -177,211 +192,200 @@ class _AddActivitiesState extends State<AddActivities> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Mulai',
-                                  style: TextStyle(
-                                    fontFamily: 'poppins_bold',
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Container(
-                                  width: double.infinity,
-                                  child: GestureDetector(
-                                    onTap: () => _selectStartTime(context),
-                                    child: Container(
-                                      width: 145,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                              color: CustomColor.borderColor,
-                                              width: 1)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              child: Text(
-                                                "${_selectedStartTime.format(context)}",
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 20,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          const Icon(
-                                            Icons.access_time,
-                                            size: 30,
-                                            color: Colors.black,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 24,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Selesai',
-                                  style: TextStyle(
-                                    fontFamily: 'poppins_bold',
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Container(
-                                  width: double.infinity,
-                                  child: GestureDetector(
-                                    onTap: () => _selectEndTime(context),
-                                    child: Container(
-                                      width: 145,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                              color: CustomColor.borderColor,
-                                              width: 1)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              child: Text(
-                                                "${_selectedEndTime.format(context)}",
-                                                style: const TextStyle(
-                                                  fontFamily: 'Popins',
-                                                  fontSize: 20,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          const Icon(
-                                            Icons.access_time,
-                                            size: 30,
-                                            color: Colors.black,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (!_isEndTimeValid)
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            'Waktu Selesai tidak boleh mendahului Waktu Mulai!',
-                            style: TextStyle(
-                              fontFamily: 'Popins',
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 30),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Keterangan',
-                            style: TextStyle(
-                              fontFamily: 'Popins',
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: keteranganController,
-                            keyboardType: TextInputType.multiline,
-                            minLines: 4,
-                            maxLines: null,
-                            textAlignVertical: TextAlignVertical.center,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Mulai',
+                              style: TextStyle(
+                                fontFamily: 'poppins_bold',
+                                fontSize: 20,
+                                color: Colors.black,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(
-                                  color: Colors.black,
-                                  width: 2,
+                            ),
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: () => _selectStartTime(context),
+                                child: Container(
+                                  width: 145,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: CustomColor.borderColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            _selectedStartTime.format(context),
+                                            style: const TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 20,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      const Icon(
+                                        Icons.access_time,
+                                        size: 30,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ), //  agar kotak tidak memiliki margin
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 20),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 50),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: CustomColor.buttonColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          minimumSize: const Size(double.infinity, 60),
+                          ],
                         ),
-                        onPressed: () {
-                          widget.onSubmit(Activity(
-                              activityName: titleController.text,
-                              lokasi: lokasiController.text,
-                              startActivityTime:
-                                  _selectedStartTime.format(context),
-                              endActivityTime: _selectedEndTime.format(context),
-                              keterangan: keteranganController.text));
-
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          child: const Text(
-                            'Simpan Aktivitas',
-                            style: TextStyle(
-                              fontFamily: 'poppins_bold',
-                              fontSize: 20,
-                              color: Color(0xFFFFFFFF),
+                      ),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Selesai',
+                              style: TextStyle(
+                                fontFamily: 'poppins_bold',
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: () => _selectEndTime(context),
+                                child: Container(
+                                  width: 145,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: CustomColor.borderColor,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                            _selectedEndTime.format(context),
+                                            style: const TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 20,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      const Icon(
+                                        Icons.access_time,
+                                        size: 30,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
+                  ),
+                  if (!_isEndTimeValid)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        'Waktu Selesai tidak boleh mendahului Waktu Mulai!',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 25),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Keterangan',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: keteranganController,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 4,
+                        maxLines: null,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 20),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 50),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: CustomColor.buttonColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      minimumSize: const Size(double.infinity, 60),
+                    ),
+                    onPressed: _isEndTimeValid ? _submitActivity : null,
+                    child: const Text(
+                      'Simpan Aktivitas',
+                      style: TextStyle(
+                        fontFamily: 'poppins_bold',
+                        fontSize: 20,
+                        color: Color(0xFFFFFFFF),
+                      ),
+                    ),
                   ),
                 ],
               ),

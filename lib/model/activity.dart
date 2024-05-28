@@ -76,9 +76,11 @@ class Activity {
             this.images, // Set images ke nilai yang diberikan atau biarkan seperti sebelumnya jika null
       );
 
-  TimeOfDay get startTimeOfDay => TimeOfDay.fromDateTime(startDateTime);
+  TimeOfDay get startTimeOfDay =>
+      TimeOfDay.fromDateTime(_formatter.parse(startActivityTime));
 
-  TimeOfDay get endTimeOfDay => TimeOfDay.fromDateTime(endDateTime);
+  TimeOfDay get endTimeOfDay =>
+      TimeOfDay.fromDateTime(_formatter.parse(endActivityTime));
 
   DateTime get startDateTime => _formatter.parse(startActivityTime);
 
