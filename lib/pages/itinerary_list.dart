@@ -372,7 +372,7 @@ class _ItineraryListState extends State<ItineraryList> {
                   "Mulai : ${itinerary.firstDate}",
                   style: const TextStyle(
                       color: CustomColor.surface,
-                      fontFamily: 'Monsterrat',
+                      fontFamily: 'Montserrat',
                       fontSize: 12),
                 ),
               )
