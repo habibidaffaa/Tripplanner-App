@@ -67,6 +67,7 @@ class Activity {
     List<String>? images, // Tambahkan parameter images ke dalam metode copy
   }) =>
       Activity(
+        id: id,
         activityName: activityName ?? this.activityName,
         lokasi: lokasi ?? this.lokasi,
         startActivityTime: startActivityTime ?? this.startActivityTime,
