@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/resource/custom_colors.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -8,6 +9,7 @@ import 'package:iterasi1/pages/add_days/add_days.dart';
 
 import '../../provider/itinerary_provider.dart';
 
+// ignore: must_be_immutable
 class SelectDate extends StatefulWidget {
   List<DateTime> initialDates;
   SelectDate({Key? key, this.initialDates = const []}) : super(key: key);
@@ -75,8 +77,14 @@ class _SelectDateState extends State<SelectDate> {
                         padding: const EdgeInsets.all(15.0),
                         child: SfDateRangePicker(
                           selectionColor: CustomColor.dateBackground,
+                          backgroundColor: CustomColor.surface,
+                          todayHighlightColor: CustomColor.borderColor,
+                          selectionTextStyle: const TextStyle(
+                            color: Colors.black,
+                          ),
                           initialSelectedDates: widget.initialDates,
                           selectionMode: DateRangePickerSelectionMode.multiple,
+                          showNavigationArrow: true,
                           minDate: DateTime.now(),
                           onSelectionChanged:
                               (DateRangePickerSelectionChangedArgs? args) {
@@ -98,6 +106,7 @@ class _SelectDateState extends State<SelectDate> {
                             }
                           },
                           headerStyle: const DateRangePickerHeaderStyle(
+                            backgroundColor: CustomColor.surface,
                             textAlign: TextAlign.center,
                             textStyle: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -126,17 +135,18 @@ class _SelectDateState extends State<SelectDate> {
                 // padding: EdgeInsets.fromLTRB(7, 15, 7, 30),
                 padding: const EdgeInsets.all(30),
                 decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40)),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey.withOpacity(0.8),
-                          spreadRadius: 4,
-                          blurRadius: 5,
-                          offset: const Offset(0, 2))
-                    ]),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.8),
+                        spreadRadius: 4,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2))
+                  ],
+                ),
                 height: 200,
                 // color: Colors.grey,
               ),
@@ -189,15 +199,14 @@ class _SelectDateState extends State<SelectDate> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return AddDays();
+                              return const AddDays();
                             },
                           ),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content:
-                                const Text("Pilih Tanggal setelah Hari Ini!"),
+                            content: Text("Pilih Tanggal setelah Hari Ini!"),
                           ),
                         );
                       }
