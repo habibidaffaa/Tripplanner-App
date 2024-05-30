@@ -356,12 +356,12 @@ class _ItineraryListState extends State<ItineraryList> {
                   child: Text(
                     itinerary.title,
                     style: const TextStyle(
-                        fontFamily: 'Monsterrat',
+                        fontFamily: 'poppins_bold',
                         fontWeight: FontWeight.w600,
                         fontSize: 20,
                         color: Colors.white),
                     textAlign: TextAlign.center,
-                    maxLines: 3,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -370,7 +370,10 @@ class _ItineraryListState extends State<ItineraryList> {
                 alignment: Alignment.bottomCenter,
                 child: Text(
                   "Mulai : ${itinerary.firstDate}",
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  style: const TextStyle(
+                      color: CustomColor.surface,
+                      fontFamily: 'Monsterrat',
+                      fontSize: 12),
                 ),
               )
             ],
