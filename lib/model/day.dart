@@ -1,18 +1,22 @@
 import 'package:iterasi1/model/activity.dart';
-import 'package:iterasi1/model/photo_model.dart';
+// import 'package:iterasi1/model/photo_model.dart';
 import 'package:iterasi1/utilities/date_time_formatter.dart';
 
 class Day {
   final String date;
   List<Activity> activities;
-  List<PhotoModel> photos;
+  // List<PhotoModel> photos;
 
-  Day({required this.date, this.activities = const [], this.photos = const []});
+  // Day({required this.date, this.activities = const [], this.photos = const []});
+  Day({
+    required this.date,
+    this.activities = const [],
+  });
 
   Day.from(DateTime initialDate)
       : date = DateTimeFormatter.toDMY(initialDate, separator: "/"),
-        activities = [],
-        photos = [];
+        activities = [];
+  //photos = [];
 
   Map<String, dynamic> toJson() {
     return {
