@@ -7,6 +7,7 @@ import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_masonry_view/flutter_masonry_view.dart';
 import 'package:iterasi1/model/activity.dart';
@@ -19,10 +20,31 @@ class ActivityPhotoPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _ActivityPhotoPageState createState() => _ActivityPhotoPageState();
 }
 
 class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
+  Future<List<File>> loadPhotos() async {
+    var result = await PhotoManager.requestPermissionExtend();
+    if (result.isAuth) {
+      List<AssetPathEntity> albums = await PhotoManager.getAssetPathList();
+      List<AssetEntity> assets =
+          await albums.first.getAssetListPaged(page: 0, size: 100);
+      List<File> files = [];
+      for (var asset in assets) {
+        var file = await asset.originFile;
+        if (file != null) {
+          files.add(file);
+        }
+      }
+      return files;
+    } else {
+      PhotoManager.openSetting();
+      return [];
+    }
+  }
+
   late ItineraryProvider itineraryProvider =
       Provider.of<ItineraryProvider>(context, listen: false);
   List<File> image = [];
@@ -48,7 +70,7 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
   }
 
   Future<void> requestPermission() async {
-    final permission = Permission.manageExternalStorage;
+    const permission = Permission.manageExternalStorage;
 
     if (await permission.isDenied) {
       final result = await permission.request();
@@ -238,13 +260,18 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        await _saveGalleryImage();
+                        var files = await loadPhotos();
+                        if (files.isNotEmpty) {
+                          setState(() {
+                            image = files;
+                          });
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
+                            WidgetStateProperty.resolveWith<Color?>(
+                          (Set<WidgetState> states) {
+                            if (states.contains(WidgetState.pressed)) {
                               return Colors.grey[100];
                             }
                             return Colors.grey;
