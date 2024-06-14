@@ -1,3 +1,6 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
+import 'dart:developer' as dev;
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -14,8 +17,9 @@ import 'package:iterasi1/pages/pdf/preview_pdf_page.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/resource/custom_colors.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'dart:developer' as dev;
 
 import '../../model/activity.dart';
 import '../../provider/itinerary_provider.dart';
@@ -39,6 +43,40 @@ class _AddDaysState extends State<AddDays> {
   late List<Widget> actionIcon;
 
   late ScaffoldMessengerState snackbarHandler;
+
+// Fungsi untuk meminta permission galeri dan navigasi jika izin diberikan
+  Future<void> requestGalleryPermission(Activity activity) async {
+    var result = await PhotoManager
+        .requestPermissionExtend(); // Langsung meminta permission dan mendapatkan hasilnya
+    if (result.isAuth) {
+      // Jika izin diberikan, navigasi ke ActivityPhotoPage
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ActivityPhotoPage(
+              activity:
+                  activity), // Pastikan class ActivityPhotoPage menerima parameter activity
+        ),
+      );
+    } else {
+      // Tampilkan dialog jika izin tidak diberikan
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Perizinan Ditolak"),
+          content:
+              const Text("Aplikasi memerlukan izin untuk mengakses galeri."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -565,14 +603,8 @@ class _AddDaysState extends State<AddDays> {
                                 alignment: Alignment.topRight,
                                 child: InkWell(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ActivityPhotoPage(
-                                          activity: activity,
-                                        ),
-                                      ),
-                                    );
+                                    requestGalleryPermission(
+                                        activity); // Kirim activity sebagai argument
                                   },
                                   child: Transform.scale(
                                     scale: 1.5, // ukuran gambar
