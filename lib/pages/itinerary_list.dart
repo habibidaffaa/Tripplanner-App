@@ -7,7 +7,7 @@ import 'package:iterasi1/pages/datepicker/select_date.dart';
 import 'package:iterasi1/resource/custom_colors.dart';
 import 'package:iterasi1/utilities/date_time_formatter.dart';
 import 'package:provider/provider.dart';
-import 'package:iterasi1/navigation/side_navbar.dart';
+// import 'package:iterasi1/navigation/side_navbar.dart';
 import 'package:flutter/services.dart';
 import '../model/itinerary.dart';
 import '../widget/text_dialog.dart';
