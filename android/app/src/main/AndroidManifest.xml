@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.b3d3pens2021.tripplanner">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <application
     android:label="Trip Planner"
     android:name="${applicationName}"
+    android:requestLegacyExternalStorage="true"
     android:icon="@mipmap/ic_launcher">
         android:name="io.flutter.app.FlutterMultiDexApplication"
 
@@ -35,5 +37,3 @@
         android:value="2" />
 </application>
 </manifest>
-
-
