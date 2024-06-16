@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:iterasi1/pages/activity_photo_controller.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path_provider/path_provider.dart';
@@ -25,49 +27,10 @@ class ActivityPhotoPage extends StatefulWidget {
 }
 
 class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
-  Future<List<File>> loadPhotos() async {
-    var result = await PhotoManager.requestPermissionExtend();
-    if (result.isAuth) {
-      List<AssetPathEntity> albums = await PhotoManager.getAssetPathList();
-      List<AssetEntity> assets =
-          await albums.first.getAssetListPaged(page: 0, size: 100);
-      List<File> files = [];
-      for (var asset in assets) {
-        var file = await asset.originFile;
-        if (file != null) {
-          files.add(file);
-        }
-      }
-      return files;
-    } else {
-      PhotoManager.openSetting();
-      return [];
-    }
-  }
+  final controller = Get.put(PhotoController());
 
   late ItineraryProvider itineraryProvider =
       Provider.of<ItineraryProvider>(context, listen: false);
-  List<File> image = [];
-
-  List<File> convertPathsToFiles(List<String> paths) {
-    log('Converting paths to files: $paths');
-    List<File> files = [];
-    for (String path in paths) {
-      if (path.isNotEmpty) {
-        // Periksa jika path tidak kosong
-        File file = File(path);
-        if (file.existsSync()) {
-          // Pastikan file ada di lokasi yang diberikan
-          files.add(file);
-        } else {
-          log('File does not exist at path: $path');
-        }
-      } else {
-        log('Encountered empty path in list: $paths');
-      }
-    }
-    return files;
-  }
 
   Future<void> requestPermission() async {
     const permission = Permission.manageExternalStorage;
@@ -104,7 +67,7 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
         itineraryProvider.addPhotoActivity(
             activity: widget.activity, pathImage: savedImage.path);
         setState(() {
-          image.add(savedImage);
+          controller.image.add(savedImage);
           log('Image added to local image list: ${savedImage.path}');
         });
       } else {
@@ -132,7 +95,7 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
         itineraryProvider.addPhotoActivity(
             activity: widget.activity, pathImage: savedImage.path);
         setState(() {
-          image.add(savedImage);
+          controller.image.add(savedImage);
           log('Image added to local image list: ${savedImage.path}');
         });
       } else {
@@ -145,11 +108,12 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
 
   @override
   void initState() {
-    super.initState();
     requestPermission();
     cleanUpImages(); // Bersihkan daftar gambar sebelum inisialisasi
-    image = convertPathsToFiles(widget.activity.images!);
+    controller.image.value =
+        controller.convertPathsToFiles(widget.activity.images!);
     log('Initial images: ${widget.activity.images}');
+    super.initState();
   }
 
   void cleanUpImages() {
@@ -253,75 +217,75 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
+            child: Obx(() => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        var files = await loadPhotos();
-                        if (files.isNotEmpty) {
-                          setState(() {
-                            image = files;
-                          });
-                        }
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            WidgetStateProperty.resolveWith<Color?>(
-                          (Set<WidgetState> states) {
-                            if (states.contains(WidgetState.pressed)) {
-                              return Colors.grey[100];
-                            }
-                            return Colors.grey;
-                          },
-                        ),
-                      ),
-                      child: const Text(
-                        'Gallery',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                image.isNotEmpty
-                    ? MasonryView(
-                        listOfItem: image,
-                        numberOfColumn: 2,
-                        itemBuilder: (item) {
-                          final file = item as File;
-                          return GestureDetector(
-                            onTap: () {
-                              _showImageDialog(file);
+                    // Column(
+                    //   children: [
+                    //     // ElevatedButton(
+                    //     //   onPressed: () async {
+                    //     //     var files = await loadPhotos();
+                    //     //     if (files.isNotEmpty) {
+                    //     //       setState(() {
+                    //     //         image = files;
+                    //     //       });
+                    //     //     }
+                    //     //   },
+                    //     //   style: ButtonStyle(
+                    //     //       // backgroundColor: MaterialStateProperty<Colors.black>
+                    //     //       //     WidgetStateProperty.resolveWith<Color?>(
+                    //     //       //   (Set<WidgetState> states) {
+                    //     //       //     if (states.contains(WidgetState.pressed)) {
+                    //     //       //       return Colors.grey[100];
+                    //     //       //     }
+                    //     //       //     return Colors.grey;
+                    //     //       //   },
+                    //     //       // ),
+                    //     //       ),
+                    //     //   child: const Text(
+                    //     //     'Gallery',
+                    //     //     style: TextStyle(
+                    //     //       color: Colors.white,
+                    //     //     ),
+                    //     //   ),
+                    //     // )
+                    //   ],
+                    // ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    controller.image.isNotEmpty
+                        ? MasonryView(
+                            listOfItem: controller.image,
+                            numberOfColumn: 2,
+                            itemBuilder: (item) {
+                              final file = item as File;
+                              return GestureDetector(
+                                onTap: () {
+                                  _showImageDialog(file);
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.file(
+                                    file,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
                             },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.file(
-                                file,
-                                fit: BoxFit.cover,
+                          )
+                        : const Center(
+                            child: Text(
+                              "Tidak ada gambar yang ditampilkan",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Montserrat',
+                                color: Colors.black,
                               ),
                             ),
-                          );
-                        },
-                      )
-                    : const Center(
-                        child: Text(
-                          "Tidak ada gambar yang ditampilkan",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Montserrat',
-                            color: Colors.black,
                           ),
-                        ),
-                      ),
-              ],
-            ),
+                  ],
+                )),
           ),
         ],
       ),
