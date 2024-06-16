@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iterasi1/resource/custom_colors.dart';
+
 import '../../model/activity.dart';
 
 class AddActivities extends StatefulWidget {
@@ -24,13 +25,15 @@ class _AddActivitiesState extends State<AddActivities> {
 
   @override
   void initState() {
-    super.initState();
     if (widget.initialActivity != null) {
       titleController.text = widget.initialActivity!.activityName;
       lokasiController.text = widget.initialActivity!.lokasi;
       keteranganController.text = widget.initialActivity!.keterangan;
       _selectedStartTime = widget.initialActivity!.startTimeOfDay;
+      print('start time : $_selectedStartTime');
       _selectedEndTime = widget.initialActivity!.endTimeOfDay;
+      print('end time : $_selectedEndTime');
+      super.initState();
     }
   }
 

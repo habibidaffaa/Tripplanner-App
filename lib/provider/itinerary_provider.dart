@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/model/day.dart';
 import 'package:iterasi1/model/itinerary.dart';
-import 'dart:developer' as developer;
 
 class ItineraryProvider extends ChangeNotifier {
   late Itinerary _itinerary;
@@ -61,8 +61,13 @@ class ItineraryProvider extends ChangeNotifier {
     }
 
     _itinerary.days = finalDays;
+    print('final : ${_itinerary.days[0].date}');
 
     notifyListeners();
+  }
+
+  List<Day> getDateTime() {
+    return _itinerary.days;
   }
 
   // String convertDateTimeToString({required DateTime dateTime}) =>
@@ -91,6 +96,7 @@ class ItineraryProvider extends ChangeNotifier {
 
   void insertNewActivity(
       {required List<Activity> activities, required Activity newActivity}) {
+    print('new activity :${newActivity.endDateTime}');
     activities.add(newActivity);
     notifyListeners();
   }

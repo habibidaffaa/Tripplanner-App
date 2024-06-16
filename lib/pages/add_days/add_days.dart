@@ -54,6 +54,7 @@ class _AddDaysState extends State<AddDays> {
         context,
         MaterialPageRoute(
           builder: (context) => ActivityPhotoPage(
+              dayIndex: selectedDayIndex,
               activity:
                   activity), // Pastikan class ActivityPhotoPage menerima parameter activity
         ),
@@ -76,7 +77,6 @@ class _AddDaysState extends State<AddDays> {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -238,6 +238,10 @@ class _AddDaysState extends State<AddDays> {
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
                                     final currentActivity = data[index].copy();
+                                    print(
+                                        'activity card : ${data[index].startDateTime}');
+                                    print(
+                                        'activity card : ${data[index].startActivityTime}');
                                     return buildActivityCard(
                                       context,
                                       data[index],
@@ -295,6 +299,8 @@ class _AddDaysState extends State<AddDays> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) {
+                                    print(itineraryProvider.itinerary
+                                        .days[selectedDayIndex].activities);
                                     return AddActivities(
                                       onSubmit: (newActivity) {
                                         itineraryProvider.insertNewActivity(
@@ -603,6 +609,9 @@ class _AddDaysState extends State<AddDays> {
                                 alignment: Alignment.topRight,
                                 child: InkWell(
                                   onTap: () {
+                                    print('activity:${activity.startDateTime}');
+                                    print(
+                                        'activity:${activity.startActivityTime}');
                                     requestGalleryPermission(
                                         activity); // Kirim activity sebagai argument
                                   },

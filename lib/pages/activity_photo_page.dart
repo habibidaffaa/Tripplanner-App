@@ -1,25 +1,26 @@
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_masonry_view/flutter_masonry_view.dart';
 import 'package:get/get.dart';
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/pages/activity_photo_controller.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_masonry_view/flutter_masonry_view.dart';
-import 'package:iterasi1/model/activity.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ActivityPhotoPage extends StatefulWidget {
   final Activity activity;
+  final int dayIndex;
   const ActivityPhotoPage({
     Key? key,
     required this.activity,
+    required this.dayIndex,
   }) : super(key: key);
 
   @override
@@ -109,11 +110,18 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
 
   @override
   void initState() {
+    controller.dateIndex = widget.dayIndex;
+    controller.itineraryProvider = itineraryProvider;
+    print('widget : ${widget.activity.startDateTime}');
+    print('widget 2 : ${widget.activity.startActivityTime}');
+    controller.activity = widget.activity;
+    controller.day = itineraryProvider.getDateTime();
     requestPermission();
     cleanUpImages(); // Bersihkan daftar gambar sebelum inisialisasi
     controller.image.value =
         controller.convertPathsToFiles(widget.activity.images!);
     log('Initial images: ${widget.activity.images}');
+    controller.loadImage();
     super.initState();
   }
 
@@ -255,42 +263,31 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
                     const SizedBox(
                       height: 6,
                     ),
-                    controller.image.isNotEmpty
-                        ? MasonryView(
-                            listOfItem: controller.image,
-                            numberOfColumn: 2,
-                            itemBuilder: (item) {
-                              final file = item as File;
-                              return GestureDetector(
-                                onTap: () {
-                                  _showImageDialog(file);
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.file(
-                                    file,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            },
+                    controller.isLoading.isTrue
+                        ? Container(
+                            child: const Text('coba loading'),
                           )
-                        : controller.isLoading.isTrue
+                        : controller.image.isNotEmpty
                             ? MasonryView(
-                                listOfItem: controller.dummy,
+                                listOfItem: controller.image,
                                 numberOfColumn: 2,
                                 itemBuilder: (item) {
-                                  return SizedBox(
-                                    width: 1080,
-                                    height: 1920,
-                                    child: Shimmer.fromColors(
-                                        baseColor: Colors.red,
-                                        highlightColor: Colors.yellow,
-                                        child: const SizedBox()),
+                                  final file = item as File;
+                                  return GestureDetector(
+                                    onTap: () {
+                                      _showImageDialog(file);
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Image.file(
+                                        file,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   );
                                 },
                               )
-                            : const Center(
+                            : Center(
                                 child: Text(
                                   "Tidak ada gambar yang ditampilkan",
                                   style: TextStyle(
