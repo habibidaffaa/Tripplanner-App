@@ -7,6 +7,8 @@ import 'package:photo_manager/photo_manager.dart';
 class PhotoController extends GetxController {
   RxList<File> image = <File>[].obs;
   List<File> files = <File>[].obs;
+  List<int> dummy = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9].obs;
+  RxBool isLoading = true.obs;
 
   @override
   void onInit() {
@@ -15,10 +17,12 @@ class PhotoController extends GetxController {
   }
 
   void loadImage() async {
+    isLoading.value = true;
     var files = await loadPhotos();
     if (files.isNotEmpty) {
       image.value = files;
     }
+    isLoading.value = false;
   }
 
   Future<List<File>> loadPhotos() async {

@@ -13,6 +13,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_masonry_view/flutter_masonry_view.dart';
 import 'package:iterasi1/model/activity.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ActivityPhotoPage extends StatefulWidget {
   final Activity activity;
@@ -274,16 +275,31 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
                               );
                             },
                           )
-                        : const Center(
-                            child: Text(
-                              "Tidak ada gambar yang ditampilkan",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'Montserrat',
-                                color: Colors.black,
+                        : controller.isLoading.isTrue
+                            ? MasonryView(
+                                listOfItem: controller.dummy,
+                                numberOfColumn: 2,
+                                itemBuilder: (item) {
+                                  return SizedBox(
+                                    width: 1080,
+                                    height: 1920,
+                                    child: Shimmer.fromColors(
+                                        baseColor: Colors.red,
+                                        highlightColor: Colors.yellow,
+                                        child: const SizedBox()),
+                                  );
+                                },
+                              )
+                            : const Center(
+                                child: Text(
+                                  "Tidak ada gambar yang ditampilkan",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Montserrat',
+                                    color: Colors.black,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
                   ],
                 )),
           ),
