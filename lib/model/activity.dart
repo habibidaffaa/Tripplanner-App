@@ -10,6 +10,7 @@ class Activity {
   String endActivityTime;
   String keterangan;
   List<String>? images; // Nullable List<String>
+  List<String>? removedImages; // Nullable List<String>
 
   static final _formatter = DateFormat.Hm();
 
@@ -20,9 +21,11 @@ class Activity {
     required this.startActivityTime,
     required this.endActivityTime,
     required this.keterangan,
+    List<String>? removedImages,
     List<String>? images,
   })  : id = id ?? const Uuid().v4(),
-        images = images ?? [];
+        images = images ?? [],
+        removedImages = removedImages ?? [];
 
   Map<String, dynamic> toJson() {
     return {
@@ -32,6 +35,7 @@ class Activity {
       'end_activity_time': endActivityTime,
       'keterangan': keterangan,
       'images': images, // Sertakan data images dalam JSON
+      'removed_images': removedImages, // Sertakan data images dalam JSON
     };
   }
 
@@ -45,6 +49,10 @@ class Activity {
             ? List<String>.from(
                 json['images']) // Ubah List<dynamic> menjadi List<String>
             : [], // Atur images ke List kosong jika null
+        removedImages: json['removed_images'] != null
+            ? List<String>.from(json[
+                'removed_images']) // Ubah List<dynamic> menjadi List<String>
+            : [], // Atur images ke List kosong jika null
       );
 
   @override
@@ -56,7 +64,9 @@ class Activity {
           lokasi == other.lokasi &&
           startActivityTime == other.startActivityTime &&
           endActivityTime == other.endActivityTime &&
-          images == other.images; // Termasuk images dalam operator ==
+          images == other.images && // Termasuk images dalam operator ==
+          removedImages ==
+              other.removedImages; // Termasuk images dalam operator ==
 
   Activity copy({
     String? activityName,
@@ -65,6 +75,8 @@ class Activity {
     String? endActivityTime,
     String? keterangan,
     List<String>? images, // Tambahkan parameter images ke dalam metode copy
+    List<String>?
+        removedImages, // Tambahkan parameter images ke dalam metode copy
   }) =>
       Activity(
         id: id,
@@ -75,6 +87,8 @@ class Activity {
         keterangan: keterangan ?? this.keterangan,
         images: images ??
             this.images, // Set images ke nilai yang diberikan atau biarkan seperti sebelumnya jika null
+        removedImages: removedImages ??
+            this.removedImages, // Set images ke nilai yang diberikan atau biarkan seperti sebelumnya jika null
       );
 
   TimeOfDay get startTimeOfDay =>

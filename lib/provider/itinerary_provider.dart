@@ -118,8 +118,27 @@ class ItineraryProvider extends ChangeNotifier {
     required Activity activity,
     required String pathImage,
   }) {
-    activity.images!.remove(pathImage);
-    log("REMOVE IMAGE $pathImage");
+    activity.removedImages!.add(pathImage);
+    log("ADD TO REMOVED IMAGE $pathImage");
+    log("removed images" + activity.removedImages.toString());
+    notifyListeners();
+  }
+
+  void returnPhotoActivity({
+    required Activity activity,
+    required String pathImage,
+  }) {
+    activity.removedImages!.remove(pathImage);
+    log("RETURN IMAGE $pathImage");
+    log("removed images${activity.removedImages}");
+    notifyListeners();
+  }
+
+  void cleanPhotoActivity({
+    required Activity activity,
+  }) {
+    activity.images = [];
+    developer.log("CLEANING");
     notifyListeners();
   }
 

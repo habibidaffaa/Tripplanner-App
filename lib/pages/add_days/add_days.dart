@@ -554,7 +554,7 @@ class _AddDaysState extends State<AddDays> {
       key: Key(activity.hashCode.toString()),
       child: InkWell(
         onTap: () {
-          log(activity.id.toString());
+          log("removed images" + activity.removedImages.toString());
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/pages/activity_photo_controller.dart';
+import 'package:iterasi1/pages/activity_trash_photo_page.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path_provider/path_provider.dart';
@@ -219,91 +220,115 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
               ],
             ),
           ),
-        ],
-      ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Obx(() => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Column(
-                    //   children: [
-                    //     // ElevatedButton(
-                    //     //   onPressed: () async {
-                    //     //     var files = await loadPhotos();
-                    //     //     if (files.isNotEmpty) {
-                    //     //       setState(() {
-                    //     //         image = files;
-                    //     //       });
-                    //     //     }
-                    //     //   },
-                    //     //   style: ButtonStyle(
-                    //     //       // backgroundColor: MaterialStateProperty<Colors.black>
-                    //     //       //     WidgetStateProperty.resolveWith<Color?>(
-                    //     //       //   (Set<WidgetState> states) {
-                    //     //       //     if (states.contains(WidgetState.pressed)) {
-                    //     //       //       return Colors.grey[100];
-                    //     //       //     }
-                    //     //       //     return Colors.grey;
-                    //     //       //   },
-                    //     //       // ),
-                    //     //       ),
-                    //     //   child: const Text(
-                    //     //     'Gallery',
-                    //     //     style: TextStyle(
-                    //     //       color: Colors.white,
-                    //     //     ),
-                    //     //   ),
-                    //     // )
-                    //   ],
-                    // ),
-                    const SizedBox(
-                      height: 6,
-                    ),
-                    controller.isLoading.isTrue
-                        ? Container(
-                            child: const Text('coba loading'),
-                          )
-                        : controller.image.isNotEmpty
-                            ? MasonryView(
-                                listOfItem: controller.image,
-                                numberOfColumn: 2,
-                                itemBuilder: (item) {
-                                  final file = item as File;
-                                  return GestureDetector(
-                                    onTap: () {
-                                      _showImageDialog(file);
-                                    },
-                                    onLongPress: () {
-                                      controller.showDeleteConfirmationDialog(
-                                          context, file);
-                                    },
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      child: Image.file(
-                                        file,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              )
-                            : Center(
-                                child: Text(
-                                  "Tidak ada gambar yang ditampilkan",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'Montserrat',
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                  ],
-                )),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ActivityTrashPhotoPage(
+                            activity: widget.activity,
+                          )));
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white, // Atur latar belakang putih
+            ),
+            child: Icon(Icons.abc),
           ),
         ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          itineraryProvider.cleanPhotoActivity(activity: widget.activity);
+          controller.image.value =
+              controller.convertPathsToFiles(widget.activity.images!);
+          log('Initial images: ${widget.activity.images}');
+          await controller.loadImage();
+        },
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Obx(() => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Column(
+                      //   children: [
+                      //     // ElevatedButton(
+                      //     //   onPressed: () async {
+                      //     //     var files = await loadPhotos();
+                      //     //     if (files.isNotEmpty) {
+                      //     //       setState(() {
+                      //     //         image = files;
+                      //     //       });
+                      //     //     }
+                      //     //   },
+                      //     //   style: ButtonStyle(
+                      //     //       // backgroundColor: MaterialStateProperty<Colors.black>
+                      //     //       //     WidgetStateProperty.resolveWith<Color?>(
+                      //     //       //   (Set<WidgetState> states) {
+                      //     //       //     if (states.contains(WidgetState.pressed)) {
+                      //     //       //       return Colors.grey[100];
+                      //     //       //     }
+                      //     //       //     return Colors.grey;
+                      //     //       //   },
+                      //     //       // ),
+                      //     //       ),
+                      //     //   child: const Text(
+                      //     //     'Gallery',
+                      //     //     style: TextStyle(
+                      //     //       color: Colors.white,
+                      //     //     ),
+                      //     //   ),
+                      //     // )
+                      //   ],
+                      // ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      controller.isLoading.isTrue
+                          ? Container(
+                              child: const Text('coba loading'),
+                            )
+                          : controller.image.isNotEmpty
+                              ? MasonryView(
+                                  listOfItem: controller.image,
+                                  numberOfColumn: 2,
+                                  itemBuilder: (item) {
+                                    final file = item as File;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        _showImageDialog(file);
+                                      },
+                                      onLongPress: () {
+                                        controller.showDeleteConfirmationDialog(
+                                            context, file);
+                                      },
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        child: Image.file(
+                                          file,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Center(
+                                  child: Text(
+                                    "Tidak ada gambar yang ditampilkan",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Montserrat',
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                    ],
+                  )),
+            ),
+          ],
+        ),
       ),
     );
   }

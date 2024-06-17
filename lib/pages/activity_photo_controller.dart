@@ -9,6 +9,7 @@ import 'package:iterasi1/model/day.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:native_exif/native_exif.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -29,27 +30,32 @@ class PhotoController extends GetxController {
     super.onInit();
   }
 
-  void loadImage() async {
+  Future<void> loadImage() async {
     isLoading.value = true;
     List<File> filedb = <File>[];
     var imagesave = itineraryProvider.getImage(activity);
-    log(imagesave.length.toString());
-    for (var i = 0; i < imagesave.length; i++) {
-      log(imagesave[i]);
-      filedb.add(File(imagesave[i]));
+    List<String> filteredA = imagesave
+        .where((item) => !(activity.removedImages?.contains(item) ?? false))
+        .toList();
+    log(filteredA.length.toString());
+    for (var i = 0; i < filteredA.length; i++) {
+      log(filteredA[i]);
+      filedb.add(File(filteredA[i]));
     }
     if (filedb.isNotEmpty) {
       image.value = filedb;
       print("filedb");
     } else {
-      var files = await loadPhotos();
+      var files = await loadNewPhotos();
       log('files : $files');
       if (files.isNotEmpty) {
         log('files not empty');
         image.value = files;
         for (var i = 0; i < files.length; i++) {
           itineraryProvider.addPhotoActivity(
-              activity: activity, pathImage: image[i].path);
+            activity: activity,
+            pathImage: image[i].path,
+          );
         }
       }
     }
@@ -57,32 +63,58 @@ class PhotoController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<List<File>> loadPhotos() async {
+  Future<List<File>> loadNewPhotos() async {
+    isLoading.value = true;
     var result = await PhotoManager.requestPermissionExtend();
-    var status = await Permission.manageExternalStorage.request();
-    print(result);
     if (result.isAuth) {
       List<AssetPathEntity> albums = await PhotoManager.getAssetPathList();
       List<AssetEntity> assets =
           await albums.first.getAssetListPaged(page: 0, size: 100);
       List<File> files = [];
       for (var asset in assets) {
-        bool isInDate = false;
         var file = await asset.originFile;
-        if (file != null) {
-          isInDate = await matchesActivityTime(file);
-          if (isInDate == true) {
-            files.add(file);
-          }
+        if (file != null &&
+            !(activity.removedImages?.contains(file.path) ?? false) &&
+            await matchesActivityTime(file)) {
+          files.add(file);
         }
       }
+      isLoading.value = false;
       return files;
     } else {
+      isLoading.value = false;
       print('tidak masuk');
       PhotoManager.openSetting();
       return [];
     }
   }
+
+  // Future<List<File>> loadNewPhotos() async {
+  //   var result = await PhotoManager.requestPermissionExtend();
+  //   var status = await Permission.manageExternalStorage.request();
+  //   print(result);
+  //   if (result.isAuth) {
+  //     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList();
+  //     List<AssetEntity> assets =
+  //         await albums.first.getAssetListPaged(page: 0, size: 100);
+  //     List<File> files = [];
+  //     for (var asset in assets) {
+  //       bool isInDate = false;
+  //       var file = await asset.originFile;
+  //       if (file != null) {
+  //         isInDate = await matchesActivityTime(file);
+  //         if (isInDate == true) {
+  //           files.add(file);
+  //         }
+  //       }
+  //     }
+  //     return files;
+  //   } else {
+  //     print('tidak masuk');
+  //     PhotoManager.openSetting();
+  //     return [];
+  //   }
+  // }
 
   List<File> convertPathsToFiles(List<String> paths) {
     log('Converting paths to files: $paths');
@@ -127,7 +159,17 @@ class PhotoController extends GetxController {
 
   Future<void> deletePhoto(File image) async {
     itineraryProvider.removePhotoActivity(
-        activity: activity, pathImage: image.path);
+      activity: activity,
+      pathImage: image.path,
+    );
+    loadImage();
+  }
+
+  Future<void> returnPhoto(File image) async {
+    itineraryProvider.returnPhotoActivity(
+      activity: activity,
+      pathImage: image.path,
+    );
     loadImage();
   }
 
@@ -159,6 +201,37 @@ class PhotoController extends GetxController {
 
     if (shouldDelete == true) {
       deletePhoto(image);
+    }
+  }
+
+  Future<void> showReturnConfirmationDialog(
+      BuildContext context, File image) async {
+    bool? shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Return Image'),
+          content: Text('Are you sure you want to return this image?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Return'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete == true) {
+      returnPhoto(image);
     }
   }
 }

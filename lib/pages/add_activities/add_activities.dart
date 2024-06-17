@@ -84,6 +84,7 @@ class _AddActivitiesState extends State<AddActivities> {
       startActivityTime: _selectedStartTime.format(context),
       endActivityTime: _selectedEndTime.format(context),
       keterangan: keteranganController.text,
+      removedImages: widget.initialActivity?.removedImages,
     );
 
     widget.onSubmit(newActivity);
