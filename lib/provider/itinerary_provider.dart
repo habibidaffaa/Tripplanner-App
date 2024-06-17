@@ -114,10 +114,23 @@ class ItineraryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removePhotoActivity({
+    required Activity activity,
+    required String pathImage,
+  }) {
+    activity.images!.remove(pathImage);
+    log("REMOVE IMAGE $pathImage");
+    notifyListeners();
+  }
+
   Future<List<Activity>> getSortedActivity(List<Activity> activities) async {
     return activities
       ..sort((a, b) {
         return a.startDateTime.compareTo(b.startDateTime);
       });
+  }
+
+  List<String> getImage(Activity activity) {
+    return activity.images!;
   }
 }

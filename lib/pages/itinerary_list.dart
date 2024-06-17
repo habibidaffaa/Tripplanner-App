@@ -264,7 +264,7 @@ class _ItineraryListState extends State<ItineraryList> {
                                     margin: const EdgeInsets.symmetric(
                                         vertical: 10.0, horizontal: 16.0),
                                     height: 100,
-                                    child: KartuItinerary(item, dbProvider,
+                                    child: kartuItinerary(item, dbProvider,
                                         context), // Anda dapat menaruh KartuItinerary di sini
                                   );
                                 },
@@ -287,7 +287,7 @@ class _ItineraryListState extends State<ItineraryList> {
     );
   }
 
-  Widget KartuItinerary(
+  Widget kartuItinerary(
       Itinerary itinerary, DatabaseProvider dbProvider, BuildContext context) {
     return InkWell(
       onTap: () {

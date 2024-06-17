@@ -277,6 +277,10 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
                                     onTap: () {
                                       _showImageDialog(file);
                                     },
+                                    onLongPress: () {
+                                      controller.showDeleteConfirmationDialog(
+                                          context, file);
+                                    },
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(8.0),
                                       child: Image.file(

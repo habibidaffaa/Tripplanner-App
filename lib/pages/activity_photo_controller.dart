@@ -1,23 +1,27 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/model/day.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:native_exif/native_exif.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:provider/provider.dart';
 
 class PhotoController extends GetxController {
   RxList<File> image = <File>[].obs;
   List<File> files = <File>[].obs;
-  List<int> dummy = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9].obs;
   RxBool isLoading = true.obs;
   late Activity activity;
   late List<Day> day;
   int dateIndex = 0;
-  late ItineraryProvider itineraryProvider;
+  // late ItineraryProvider itineraryProvider;
+  late ItineraryProvider itineraryProvider =
+      Provider.of<ItineraryProvider>(Get.context!, listen: false);
 
   @override
   void onInit() {
@@ -27,19 +31,36 @@ class PhotoController extends GetxController {
 
   void loadImage() async {
     isLoading.value = true;
-    var files = await loadPhotos();
-    if (files.isNotEmpty) {
-      image.value = files;
-      for (var i = 0; i < files.length; i++) {
-        itineraryProvider.addPhotoActivity(
-            activity: activity, pathImage: image[i].path);
+    List<File> filedb = <File>[];
+    var imagesave = itineraryProvider.getImage(activity);
+    log(imagesave.length.toString());
+    for (var i = 0; i < imagesave.length; i++) {
+      log(imagesave[i]);
+      filedb.add(File(imagesave[i]));
+    }
+    if (filedb.isNotEmpty) {
+      image.value = filedb;
+      print("filedb");
+    } else {
+      var files = await loadPhotos();
+      log('files : $files');
+      if (files.isNotEmpty) {
+        log('files not empty');
+        image.value = files;
+        for (var i = 0; i < files.length; i++) {
+          itineraryProvider.addPhotoActivity(
+              activity: activity, pathImage: image[i].path);
+        }
       }
     }
+
     isLoading.value = false;
   }
 
   Future<List<File>> loadPhotos() async {
     var result = await PhotoManager.requestPermissionExtend();
+    var status = await Permission.manageExternalStorage.request();
+    print(result);
     if (result.isAuth) {
       List<AssetPathEntity> albums = await PhotoManager.getAssetPathList();
       List<AssetEntity> assets =
@@ -57,6 +78,7 @@ class PhotoController extends GetxController {
       }
       return files;
     } else {
+      print('tidak masuk');
       PhotoManager.openSetting();
       return [];
     }
@@ -93,16 +115,50 @@ class PhotoController extends GetxController {
 
     DateTime activityStart = startTime;
     DateTime activityEnd = endTime;
-    // DateTime activityStart = DateTime.now().subtract(Duration(days: 1));
-    // DateTime activityEnd = DateTime.now().add(Duration(days: 1));
     print('date : $photoDate , start : $activityStart, end : $activityEnd');
     if (photoDate != null &&
         photoDate.isAfter(activityStart) &&
         photoDate.isBefore(activityEnd)) {
-      // print('masuk');
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<void> deletePhoto(File image) async {
+    itineraryProvider.removePhotoActivity(
+        activity: activity, pathImage: image.path);
+    loadImage();
+  }
+
+  Future<void> showDeleteConfirmationDialog(
+      BuildContext context, File image) async {
+    bool? shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Delete'),
+          content: Text('Are you sure you want to delete this image?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete == true) {
+      deletePhoto(image);
     }
   }
 }
