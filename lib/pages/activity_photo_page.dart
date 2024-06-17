@@ -64,12 +64,11 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
       final savedImage = await imageFile.copy('${appDir.path}/$fileName');
       log('Image saved to: ${savedImage.path}');
       if (!widget.activity.images!.contains(savedImage.path)) {
-        widget.activity.images!.add(savedImage.path);
         log('Image added to activity images: ${savedImage.path}');
         itineraryProvider.addPhotoActivity(
             activity: widget.activity, pathImage: savedImage.path);
         setState(() {
-          controller.image.add(savedImage);
+          controller.loadImage();
           log('Image added to local image list: ${savedImage.path}');
         });
       } else {
