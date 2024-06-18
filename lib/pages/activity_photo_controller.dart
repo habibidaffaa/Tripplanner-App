@@ -8,8 +8,6 @@ import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/model/day.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:native_exif/native_exif.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -179,20 +177,20 @@ class PhotoController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Delete'),
-          content: Text('Are you sure you want to delete this image?'),
+          title: const Text('Konfirmasi Hapus Foto'),
+          content: const Text('Apa kamu yakin ingin menghapus foto ini?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: Text('Cancel'),
+              child: const Text('Batal'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text('Delete'),
+              child: const Text('Hapus'),
             ),
           ],
         );
@@ -210,20 +208,20 @@ class PhotoController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Return Image'),
-          content: Text('Are you sure you want to return this image?'),
+          title: const Text('Pulihkan Foto'),
+          content: const Text('Apa kamu yakin ingin mengembalikan foto ini?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: Text('Cancel'),
+              child: const Text('Batal'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text('Return'),
+              child: const Text('Pulihkan'),
             ),
           ],
         );
