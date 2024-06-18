@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_masonry_view/flutter_masonry_view.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/pages/activity_photo_controller.dart';
@@ -92,7 +91,7 @@ class _ActivityTrashPhotoPageState extends State<ActivityTrashPhotoPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Removed Image",
+          "Gambar Dihapus",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'poppins_bold',
