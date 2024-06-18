@@ -1,8 +1,11 @@
+// ignore_for_file: unused_element
+
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_masonry_view/flutter_masonry_view.dart';
+// import 'package:flutter_masonry_view/flutter_masonry_view.dart';
 import 'package:get/get.dart';
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +13,7 @@ import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/pages/activity_photo_controller.dart';
 import 'package:iterasi1/pages/activity_trash_photo_page.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
+import 'package:iterasi1/resource/custom_colors.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -112,7 +116,9 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
   void initState() {
     controller.dateIndex = widget.dayIndex;
     controller.itineraryProvider = itineraryProvider;
+    // ignore: avoid_print
     print('widget : ${widget.activity.startDateTime}');
+    // ignore: avoid_print
     print('widget 2 : ${widget.activity.startActivityTime}');
     controller.activity = widget.activity;
     controller.day = itineraryProvider.getDateTime();
@@ -190,8 +196,9 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: CustomColor.surface,
         title: const Text(
-          "Image",
+          "Foto Aktifitas",
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'poppins_bold',
@@ -201,26 +208,12 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
           ),
         ),
         actions: [
-          ElevatedButton(
-            onPressed: () async {
-              await _saveCameraImage();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white, // Atur latar belakang putih
+          IconButton(
+            icon: const Icon(
+              Icons.delete,
+              color: CustomColor.buttonColor,
             ),
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.start, // Geser posisi gambar ke kiri
-              children: [
-                Image.asset(
-                  'assets/images/Logo_camera.png',
-                  width: 40,
-                  height: 40,
-                ),
-              ],
-            ),
-          ),
-          ElevatedButton(
+            tooltip: '',
             onPressed: () {
               Navigator.push(
                   context,
@@ -229,10 +222,10 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
                             activity: widget.activity,
                           )));
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white, // Atur latar belakang putih
-            ),
-            child: Icon(Icons.abc),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(
+                right: 20), // Tambahkan padding sesuai kebutuhan
           ),
         ],
       ),
@@ -251,44 +244,11 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
               child: Obx(() => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Column(
-                      //   children: [
-                      //     // ElevatedButton(
-                      //     //   onPressed: () async {
-                      //     //     var files = await loadPhotos();
-                      //     //     if (files.isNotEmpty) {
-                      //     //       setState(() {
-                      //     //         image = files;
-                      //     //       });
-                      //     //     }
-                      //     //   },
-                      //     //   style: ButtonStyle(
-                      //     //       // backgroundColor: MaterialStateProperty<Colors.black>
-                      //     //       //     WidgetStateProperty.resolveWith<Color?>(
-                      //     //       //   (Set<WidgetState> states) {
-                      //     //       //     if (states.contains(WidgetState.pressed)) {
-                      //     //       //       return Colors.grey[100];
-                      //     //       //     }
-                      //     //       //     return Colors.grey;
-                      //     //       //   },
-                      //     //       // ),
-                      //     //       ),
-                      //     //   child: const Text(
-                      //     //     'Gallery',
-                      //     //     style: TextStyle(
-                      //     //       color: Colors.white,
-                      //     //     ),
-                      //     //   ),
-                      //     // )
-                      //   ],
-                      // ),
                       const SizedBox(
                         height: 6,
                       ),
                       controller.isLoading.isTrue
-                          ? Container(
-                              child: const Text('coba loading'),
-                            )
+                          ? const Text('coba loading')
                           : controller.image.isNotEmpty
                               ? MasonryView(
                                   listOfItem: controller.image,
@@ -314,7 +274,7 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
                                     );
                                   },
                                 )
-                              : Center(
+                              : const Center(
                                   child: Text(
                                     "Tidak ada gambar yang ditampilkan",
                                     style: TextStyle(
@@ -328,6 +288,27 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
                   )),
             ),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: CustomColor.surface,
+        onPressed: () async {
+          await _saveCameraImage();
+        },
+        elevation: 0, // Menghilangkan shadow
+        child: Container(
+          width: 56, // Lebar FloatingActionButton secara default adalah 56
+          height: 56, // Tinggi FloatingActionButton secara default juga 56
+          decoration: const BoxDecoration(
+            shape:
+                BoxShape.circle, // Membuat bentuk container menjadi lingkaran
+            image: DecorationImage(
+              image: AssetImage('assets/images/Logo_camera.png'),
+              fit: BoxFit
+                  .contain, // Menggunakan BoxFit.contain untuk memastikan gambar fit tapi tidak dipotong
+            ),
+          ),
+          alignment: Alignment.center, // Menjamin gambar berada di tengah
         ),
       ),
     );
