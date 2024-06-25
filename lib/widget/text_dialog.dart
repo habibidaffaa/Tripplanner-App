@@ -27,13 +27,20 @@ class TextDialogWidget extends StatefulWidget {
 class _TextDialogWidgetState extends State<TextDialogWidget> {
   late TextEditingController controller;
   String? errorText;
+  bool isButtonEnabled = false;
 
   @override
   void initState() {
     super.initState();
     controller = TextEditingController(text: widget.value);
+    isButtonEnabled = _isInputValid(widget.value);
   }
 
+  bool _isInputValid(String input) {
+    return input.trim().isNotEmpty;
+  }
+
+  @override
   Widget build(BuildContext context) => AlertDialog(
         title: Text(widget.title),
         content: Column(
@@ -42,6 +49,16 @@ class _TextDialogWidgetState extends State<TextDialogWidget> {
           children: [
             TextField(
               controller: controller,
+              onChanged: (value) {
+                setState(() {
+                  isButtonEnabled = _isInputValid(value);
+                  if (!isButtonEnabled) {
+                    errorText = "Judul tidak boleh kosong!";
+                  } else {
+                    errorText = null;
+                  }
+                });
+              },
               decoration: InputDecoration(
                   errorText: errorText,
                   focusedBorder: OutlineInputBorder(
@@ -58,21 +75,25 @@ class _TextDialogWidgetState extends State<TextDialogWidget> {
                 child: ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStatePropertyAll(CustomColor.buttonColor),
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                            WidgetStateProperty.resolveWith<Color>(
+                                (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.disabled)) {
+                            return Colors.grey;
+                          }
+                          return CustomColor
+                              .buttonColor; // Return the default color
+                        }),
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)))),
-                    child: Text(
-                      'Done',
+                    onPressed: isButtonEnabled
+                        ? () {
+                            Navigator.of(context).pop(controller.text);
+                          }
+                        : null,
+                    child: const Text(
+                      'Selesai',
                       style: TextStyle(color: CustomColor.surface),
-                    ),
-                    onPressed: () {
-                      if (controller.text.isNotEmpty)
-                        Navigator.of(context).pop(controller.text);
-                      else
-                        setState(() {
-                          errorText = "Judul tidak boleh kosong!";
-                        });
-                    }),
+                    )),
               ),
             ),
           ],
