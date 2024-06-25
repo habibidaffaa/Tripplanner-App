@@ -177,23 +177,77 @@ class PhotoController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Konfirmasi Hapus Foto'),
-          content: const Text('Apa kamu yakin ingin menghapus foto ini?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: const Text('Batal'),
+          backgroundColor: Colors.white, // Ubah warna latar belakang
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0), // Ubah bentuk border
+          ),
+          title: const Text(
+            'Konfirmasi Hapus Foto',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'poppins_bold',
+              color: Color(0xFFC58940), // Ubah warna teks judul
+              fontWeight: FontWeight.bold, // Teks judul menjadi tebal
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text('Hapus'),
+          ),
+          content: const Text(
+            'Apa kamu yakin ingin menghapus foto ini?',
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green, // Ubah warna latar belakang
+                      borderRadius:
+                          BorderRadius.circular(8), // Ubah bentuk border
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 24), // Atur padding
+                    child: const Text(
+                      'Batal',
+                      textAlign: TextAlign.center, // Pusatkan teks dalam tombol
+                      style: TextStyle(
+                        fontFamily: 'poppins_bold',
+                        color: Colors.white, // Ubah warna teks
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20), // Spasi antar tombol
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red, // Ubah warna latar belakang
+                      borderRadius:
+                          BorderRadius.circular(8), // Ubah bentuk border
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 24), // Atur padding
+                    child: const Text(
+                      'Hapus',
+                      textAlign: TextAlign.center, // Pusatkan teks dalam tombol
+                      style: TextStyle(
+                        fontFamily: 'poppins_bold',
+                        color: Colors.white, // Ubah warna teks
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
+
       },
     );
 
@@ -208,23 +262,77 @@ class PhotoController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Pulihkan Foto'),
-          content: const Text('Apa kamu yakin ingin mengembalikan foto ini?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: const Text('Batal'),
+          backgroundColor: Colors.white, // Ubah warna latar belakang
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0), // Ubah bentuk border
+          ),
+          title: const Text(
+            'Pulihkan Foto',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'poppins_bold',
+              color: Color(0xFFC58940), // Ubah warna teks judul
+              fontWeight: FontWeight.bold, // Teks judul menjadi tebal
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text('Pulihkan'),
+          ),
+          content: const Text(
+            'Apa kamu yakin ingin mengembalikan foto ini?',
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.green, // Ubah warna latar belakang
+                      borderRadius:
+                          BorderRadius.circular(8), // Ubah bentuk border
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 24), // Atur padding
+                    child: const Text(
+                      'Batal',
+                      textAlign: TextAlign.center, // Pusatkan teks dalam tombol
+                      style: TextStyle(
+                        fontFamily: 'poppins_bold',
+                        color: Colors.white, // Ubah warna teks
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20), // Spasi antar tombol
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red, // Ubah warna latar belakang
+                      borderRadius:
+                          BorderRadius.circular(8), // Ubah bentuk border
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 24), // Atur padding
+                    child: const Text(
+                      'Pulihkan',
+                      textAlign: TextAlign.center, // Pusatkan teks dalam tombol
+                      style: TextStyle(
+                        fontFamily: 'poppins_bold',
+                        color: Colors.white, // Ubah warna teks
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
+
       },
     );
 
