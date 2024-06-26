@@ -64,6 +64,7 @@ dependencies:
   get: ^4.6.6
   shimmer: ^3.0.0
   native_exif: ^0.5.0
+  loading_animation_widget: ^1.2.1
 
 dev_dependencies:
   flutter_test:

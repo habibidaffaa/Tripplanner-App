@@ -14,6 +14,7 @@ import 'package:iterasi1/pages/activity_photo_controller.dart';
 import 'package:iterasi1/pages/activity_trash_photo_page.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -248,7 +249,18 @@ class _ActivityPhotoPageState extends State<ActivityPhotoPage> {
                         height: 6,
                       ),
                       controller.isLoading.isTrue
-                          ? const Text('coba loading')
+                          ? Container(
+                            alignment: Alignment.center,
+                            color: CustomColor.surface,
+                            child: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: LoadingAnimationWidget.discreteCircle(
+                                  color: CustomColor.surface,
+                                  size: 200,
+                                ),
+                            ),
+                          )
                           : controller.image.isNotEmpty
                               ? MasonryView(
                                   listOfItem: controller.image,
