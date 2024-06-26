@@ -20,6 +20,10 @@ class _AddActivitiesState extends State<AddActivities> {
   bool _isEndTimeValid = true;
   bool _isTitleValid = true;
   bool _isLocationValid = true;
+  bool _showTitleValidationMessage =
+      false; // Variabel kontrol untuk pesan validasi judul
+  bool _showLocationValidationMessage =
+      false; // Variabel kontrol untuk pesan validasi lokasi
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController lokasiController = TextEditingController();
@@ -37,21 +41,27 @@ class _AddActivitiesState extends State<AddActivities> {
       print('end time : $_selectedEndTime');
       super.initState();
     }
-    titleController.addListener(_validateTitle);
-    lokasiController.addListener(_validateLocation);
+    titleController.addListener(() {
+      _validateTitle(showMessage: true);
+    });
+    lokasiController.addListener(() {
+      _validateLocation(showMessage: true);
+    });
     _validateTitle();
     _validateLocation();
   }
 
-  void _validateTitle() {
+  void _validateTitle({bool showMessage = false}) {
     setState(() {
       _isTitleValid = titleController.text.trim().isNotEmpty;
+      _showTitleValidationMessage = showMessage && !_isTitleValid;
     });
   }
 
-  void _validateLocation() {
+  void _validateLocation({bool showMessage = false}) {
     setState(() {
       _isLocationValid = lokasiController.text.trim().isNotEmpty;
+      _showLocationValidationMessage = showMessage && !_isLocationValid;
     });
   }
 
@@ -113,6 +123,18 @@ class _AddActivitiesState extends State<AddActivities> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColor.surface,
+      appBar: AppBar(
+        backgroundColor: CustomColor.surface,
+        title: const Text(
+          "Tambah Aktivitas",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'poppins_bold',
+            fontSize: 30,
+            color: CustomColor.buttonColor,
+          ),
+        ),
+      ),
       body: Container(
         margin: const EdgeInsets.only(bottom: 20),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
@@ -124,32 +146,6 @@ class _AddActivitiesState extends State<AddActivities> {
                 physics: const BouncingScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5, bottom: 10),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          padding: EdgeInsets.zero,
-                          alignment: Alignment.centerLeft,
-                        ),
-                        const SizedBox(width: 5),
-                        const Text(
-                          "Tambah Aktivitas",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'poppins_bold',
-                            fontSize: 30,
-                            color: CustomColor.buttonColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -186,7 +182,7 @@ class _AddActivitiesState extends State<AddActivities> {
                           ),
                         ),
                       ),
-                      if (!_isTitleValid)
+                      if (_showTitleValidationMessage)
                         const Padding(
                           padding: EdgeInsets.only(top: 8.0),
                           child: Text(
@@ -235,14 +231,14 @@ class _AddActivitiesState extends State<AddActivities> {
                               width: 2,
                             ),
                           ),
-                          suffixIcon: const Icon(
-                            IconData(0xe055, fontFamily: 'MaterialIcons'),
-                            size: 30,
-                            color: Colors.black,
-                          ),
+                          // suffixIcon: const Icon(
+                          //   IconData(0xe055, fontFamily: 'MaterialIcons'),
+                          //   size: 30,
+                          //   color: Colors.black,
+                          // ),
                         ),
                       ),
-                      if (!_isLocationValid)
+                      if (_showLocationValidationMessage)
                         const Padding(
                           padding: EdgeInsets.only(top: 8.0),
                           child: Text(
@@ -433,32 +429,31 @@ class _AddActivitiesState extends State<AddActivities> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 50),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor:
-                          _isEndTimeValid && _isTitleValid && _isLocationValid
-                              ? CustomColor.buttonColor
-                              : Colors.grey,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      minimumSize: const Size(double.infinity, 60),
-                    ),
-                    onPressed:
-                        _isEndTimeValid && _isTitleValid && _isLocationValid
-                            ? _submitActivity
-                            : null,
-                    child: const Text(
-                      'Simpan Aktivitas',
-                      style: TextStyle(
-                        fontFamily: 'poppins_bold',
-                        fontSize: 20,
-                        color: Color(0xFFFFFFFF),
-                      ),
-                    ),
-                  ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor:
+                    _isEndTimeValid && _isTitleValid && _isLocationValid
+                        ? CustomColor.buttonColor
+                        : Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                minimumSize: const Size(double.infinity, 60),
+              ),
+              onPressed: _isEndTimeValid && _isTitleValid && _isLocationValid
+                  ? _submitActivity
+                  : null,
+              child: const Text(
+                'Simpan Aktivitas',
+                style: TextStyle(
+                  fontFamily: 'poppins_bold',
+                  fontSize: 20,
+                  color: Color(0xFFFFFFFF),
+                ),
               ),
             ),
           ],
