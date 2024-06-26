@@ -18,6 +18,8 @@ class _AddActivitiesState extends State<AddActivities> {
   TimeOfDay _selectedStartTime = TimeOfDay.now();
   TimeOfDay _selectedEndTime = TimeOfDay.now();
   bool _isEndTimeValid = true;
+  bool _isTitleValid = true;
+  bool _isLocationValid = true;
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController lokasiController = TextEditingController();
@@ -35,6 +37,22 @@ class _AddActivitiesState extends State<AddActivities> {
       print('end time : $_selectedEndTime');
       super.initState();
     }
+    titleController.addListener(_validateTitle);
+    lokasiController.addListener(_validateLocation);
+    _validateTitle();
+    _validateLocation();
+  }
+
+  void _validateTitle() {
+    setState(() {
+      _isTitleValid = titleController.text.trim().isNotEmpty;
+    });
+  }
+
+  void _validateLocation() {
+    setState(() {
+      _isLocationValid = lokasiController.text.trim().isNotEmpty;
+    });
   }
 
   Future<void> _selectStartTime(BuildContext context) async {
@@ -152,16 +170,33 @@ class _AddActivitiesState extends State<AddActivities> {
                           hintText: 'Cth. Persiapan Berangkat',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: _isTitleValid ? Colors.grey : Colors.red,
+                              width: 2,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF305A5A),
+                            borderSide: BorderSide(
+                              color: _isTitleValid
+                                  ? const Color(0xFF305A5A)
+                                  : Colors.red,
                               width: 2,
                             ),
                           ),
                         ),
                       ),
+                      if (!_isTitleValid)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            'Judul tidak boleh kosong',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -185,11 +220,18 @@ class _AddActivitiesState extends State<AddActivities> {
                           hintText: 'Cth. Stasiun',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color:
+                                  _isLocationValid ? Colors.grey : Colors.red,
+                              width: 2,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF305A5A),
+                            borderSide: BorderSide(
+                              color: _isLocationValid
+                                  ? const Color(0xFF305A5A)
+                                  : Colors.red,
                               width: 2,
                             ),
                           ),
@@ -200,6 +242,17 @@ class _AddActivitiesState extends State<AddActivities> {
                           ),
                         ),
                       ),
+                      if (!_isLocationValid)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            'Lokasi tidak boleh kosong',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -383,13 +436,19 @@ class _AddActivitiesState extends State<AddActivities> {
                   const SizedBox(height: 50),
                   TextButton(
                     style: TextButton.styleFrom(
-                      backgroundColor: CustomColor.buttonColor,
+                      backgroundColor:
+                          _isEndTimeValid && _isTitleValid && _isLocationValid
+                              ? CustomColor.buttonColor
+                              : Colors.grey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       minimumSize: const Size(double.infinity, 60),
                     ),
-                    onPressed: _isEndTimeValid ? _submitActivity : null,
+                    onPressed:
+                        _isEndTimeValid && _isTitleValid && _isLocationValid
+                            ? _submitActivity
+                            : null,
                     child: const Text(
                       'Simpan Aktivitas',
                       style: TextStyle(
