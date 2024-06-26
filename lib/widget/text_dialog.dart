@@ -60,6 +60,10 @@ class _TextDialogWidgetState extends State<TextDialogWidget> {
                 });
               },
               decoration: InputDecoration(
+                  hintStyle: const TextStyle(
+                    fontSize: 16,
+                  ),
+                  hintText: 'Cth. Trip Bromo',
                   errorText: errorText,
                   focusedBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
@@ -74,9 +78,8 @@ class _TextDialogWidgetState extends State<TextDialogWidget> {
                 padding: const EdgeInsets.only(top: 18),
                 child: ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            WidgetStateProperty.resolveWith<Color>(
-                                (Set<WidgetState> states) {
+                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
                           if (states.contains(WidgetState.disabled)) {
                             return Colors.grey;
                           }
