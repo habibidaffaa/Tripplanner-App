@@ -148,6 +148,8 @@ class _AddActivitiesState extends State<AddActivities> {
                       TextField(
                         controller: titleController,
                         decoration: InputDecoration(
+                          hintStyle: const TextStyle(fontSize: 16),
+                          hintText: 'Cth. Persiapan Berangkat',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -179,6 +181,8 @@ class _AddActivitiesState extends State<AddActivities> {
                       TextField(
                         controller: lokasiController,
                         decoration: InputDecoration(
+                          hintStyle: const TextStyle(fontSize: 16),
+                          hintText: 'Cth. Stasiun',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -346,7 +350,7 @@ class _AddActivitiesState extends State<AddActivities> {
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
-                        overflow: TextOverflow.ellipsis,
+                        // overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 10),
                       TextField(
@@ -356,6 +360,10 @@ class _AddActivitiesState extends State<AddActivities> {
                         maxLines: null,
                         textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
+                          hintStyle: const TextStyle(fontSize: 16),
+                          hintText:
+                              'Cth. Pastikan semua barang tidak ada yang tertinggal',
+                          hintMaxLines: 3,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
