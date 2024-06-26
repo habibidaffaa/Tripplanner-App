@@ -67,7 +67,7 @@ class PhotoController extends GetxController {
     if (result.isAuth) {
       List<AssetPathEntity> albums = await PhotoManager.getAssetPathList();
       List<AssetEntity> assets =
-          await albums.first.getAssetListPaged(page: 0, size: 100);
+          await albums.first.getAssetListPaged(page: 0, size: 200);
       List<File> files = [];
       for (var asset in assets) {
         var file = await asset.originFile;
