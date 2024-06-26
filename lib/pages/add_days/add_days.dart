@@ -616,8 +616,10 @@ class _AddDaysState extends State<AddDays> {
                                         activity); // Kirim activity sebagai argument
                                   },
                                   child: Transform.scale(
-                                    scale: 1.5, // ukuran gambar
+                                    scale: 1.8, // ukuran gambar
                                     child: const Image(
+                                      width: 30,
+                                      height: 30,
                                       color: CustomColor.surface,
                                       image: AssetImage(
                                         'assets/images/gallery-favorite.png',
